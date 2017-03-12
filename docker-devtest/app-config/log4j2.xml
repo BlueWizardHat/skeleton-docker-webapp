@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger - %msg%n"/>
+		</Console>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="net.bluewizardhat" level="trace" />
+
+		<!-- <Logger name="org.hibernate.hql.internal.ast.QueryTranslatorImpl" level="debug" /> -->
+
+		<Root level="info">
+			<AppenderRef ref="Console"/>
+		</Root>
+	</Loggers>
+
+</Configuration>

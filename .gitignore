@@ -1,0 +1,29 @@
+# Maven
+target/
+
+# Ansible and Docker
+.deploy/
+
+# Eclipse
+bin/
+.classpath
+.externalToolBuilders/
+.project
+.springBeans
+.settings/
+.metadata/
+
+# IntelliJ
+.idea
+*.iml
+*.ipr
+*.iws
+atlassian-ide-plugin.xml
+
+#  Some jvm files
+ajcore.*.txt
+
+# Mac
+.DS_Store
+*-deps.txt
+dep-report.csv

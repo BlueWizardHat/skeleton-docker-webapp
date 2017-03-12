@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  # Frontend
+  frontend:
+    image: devtest_apache
+    build: ./compose/apache
+    ports:
+      - "81:80"
+    volumes:
+      - ./compose/apache/tomcat-proxy.conf:/etc/apache2/sites-available/000-default.conf
+      - ../frontend:/var/www/html
+    links:
+      - backend
+
+  # Backend
+  backend:
+    image: devtest_java
+    build: ./compose/java
+    command: /setup/run-jar.sh backend.jar postgresql:5432 5
+    ports:
+      - "8081:8080"
+      - "4081:4000"
+    environment:
+      - "JAVA_DEBUG=${BACKEND_DEBUG}"
+    volumes:
+      - ../.deploy/backend.jar:/code/backend.jar
+      - ./app-config/backend.properties:/code/application.properties
+      - ./app-config/log4j2.xml:/code/log4j2.xml
+    links:
+      - postgresql
+
+  # Database
+  postgresql:
+    image: postgres:9.6.1
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=ca5d339b9dd64fdfbe6e8e5625456ef7"
+    volumes:
+      - ./app-config/postgresql-initdb.d:/docker-entrypoint-initdb.d

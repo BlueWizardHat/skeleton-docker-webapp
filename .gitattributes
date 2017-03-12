@@ -1,0 +1,46 @@
+# EOL normalization for all files detected as text (ie. eol=lf)
+* text=auto
+
+# Unix files
+*.sh			text
+
+# Java
+*.java			text
+*.properties	text
+
+# Web development
+*.html			text
+*.js			text
+*.css			text
+
+# Misc
+*.sql			text
+*.md			text
+*.txt			text
+*.xml			text
+*.yml			text
+*.yaml			text
+*.json			text
+*.conf			text
+*.config		text
+*.gradle		text
+*.defaults
+Dockerfile		text
+
+# Windows text
+*.bat			text eol=crlf
+
+# Image files
+*.png			binary
+*.jpg			binary
+*.jpeg			binary
+*.gif			binary
+
+# Archives
+*.jar			binary
+*.war			binary
+*.tar			binary
+*.tar.gz		binary
+*.tar.bz2		binary
+*.zip			binary
+*.7z			binary

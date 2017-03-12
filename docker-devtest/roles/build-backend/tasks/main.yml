@@ -1,0 +1,30 @@
+---
+  - name: Backend (demo profile)
+    command: mvn clean install -P demo
+    args:
+      chdir: "{{ backend_dir }}"
+    tags:
+      - backend
+
+  - set_fact:
+      jar_to_copy: "{{ ('sources' in item) | ternary (omit, item) }}"
+    with_fileglob:
+      - "{{ backend_dir }}/webapp/target/*.jar"
+    register: jar_to_copy
+    tags:
+      - backend
+      - copyjar
+
+  - name: Copy jarfile to deploy dir
+    copy: src="{{ jar_to_copy }}" dest="{{ deploy_dir }}/backend.jar"
+    tags:
+      - backend
+      - copyjar
+
+  - name: Restart backend and frontend docker containers
+    command: docker restart dockerdevtest_backend_1 dockerdevtest_frontend_1
+    when: redeploy | bool
+    async: 45
+    poll: 0
+    tags:
+      - backend

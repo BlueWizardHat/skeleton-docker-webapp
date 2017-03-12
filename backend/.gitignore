@@ -1,0 +1,5 @@
+# Ensure that people do not commit any log4j config that might end up in the build
+log4j.properties
+log4j.xml
+log4j2.properties
+log4j2.xml

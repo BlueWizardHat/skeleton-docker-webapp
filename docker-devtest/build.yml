@@ -1,0 +1,10 @@
+---
+  - hosts: localhost
+    connection: local
+
+    vars:
+      redeploy: true
+
+    roles:
+      - check-env
+      - build-backend
