@@ -24,7 +24,7 @@
 *.conf			text
 *.config		text
 *.gradle		text
-*.defaults
+*.defaults		text
 Dockerfile		text
 
 # Windows text
