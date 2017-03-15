@@ -4,15 +4,16 @@ import static net.bluewizardhat.dockerwebapp.util.concurrent.RunnableWrappers.wr
 import static net.bluewizardhat.dockerwebapp.util.concurrent.RunnableWrappers.wrapThreadContext;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import net.bluewizardhat.dockerwebapp.util.concurrent.WebExecutorService;
 
-public class BaseRestController {
+public abstract class BaseRestController {
 
-	private ExecutorService executorService = Executors.newCachedThreadPool();
+	@Autowired
+	private WebExecutorService executorService;
 
 	protected <T> DeferredResult<T> submit(final Callable<T> callable) {
 		final DeferredResult<T> deferredResult = new DeferredResult<>();
