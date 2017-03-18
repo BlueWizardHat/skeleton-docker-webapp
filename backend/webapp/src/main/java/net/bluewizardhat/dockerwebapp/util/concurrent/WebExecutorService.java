@@ -1,5 +1,7 @@
 package net.bluewizardhat.dockerwebapp.util.concurrent;
 
+import static net.bluewizardhat.dockerwebapp.util.concurrent.RunnableWrappers.wrapRunnable;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -62,6 +64,17 @@ public class WebExecutorService {
 	 */
 	public void execute(Runnable runnable) {
 		executorService.execute(runnable);
+	}
+
+	/**
+	 * A wrapper for {@linkplain ExecutorService#execute(Runnable)} but the Runnable is first wrapped with
+	 * RunnableWrappers.wrapRunnable.
+	 *
+	 * @see ExecutorService#execute(Runnable)
+	 * @see RunnableWrappers#wrapRunnable(Runnable)
+	 */
+	public void executeWrapped(Runnable runnable) {
+		executorService.execute(wrapRunnable(runnable));
 	}
 
 	/**
