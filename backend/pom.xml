@@ -33,6 +33,7 @@
 		<swagger.version>1.5.12</swagger.version>
 		<springfox-swagger.version>2.6.1</springfox-swagger.version>
 		<hibernate-jpa.version>1.0.0.Final</hibernate-jpa.version>
+		<csrf-token-filter.version>1.1</csrf-token-filter.version>
 		<postgres.version>9.4.1212</postgres.version>
 	</properties>
 
@@ -151,6 +152,11 @@
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>${postgres.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.allanditzel</groupId>
+				<artifactId>spring-security-csrf-token-filter</artifactId>
+				<version>${csrf-token-filter.version}</version>
 			</dependency>
 
 			<!-- Project components -->

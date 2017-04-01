@@ -108,6 +108,10 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.allanditzel</groupId>
+			<artifactId>spring-security-csrf-token-filter</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
