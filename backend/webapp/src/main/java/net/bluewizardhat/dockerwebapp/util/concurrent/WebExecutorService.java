@@ -1,19 +1,23 @@
 package net.bluewizardhat.dockerwebapp.util.concurrent;
 
+import static java.lang.Math.max;
 import static net.bluewizardhat.dockerwebapp.util.concurrent.RunnableWrappers.wrapRunnable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bluewizardhat.dockerwebapp.exception.ServerBusyException;
 
 /**
  * A wrapper around an {@linkplain ExecutorService} for web methods.
@@ -36,18 +40,33 @@ public class WebExecutorService {
 	@Value("${webapp.maxThreadsPrProcessor:4}")
 	private int maxThreadsPrProcessor;
 
+	/**
+	 * Number of acceptable jobs waiting in queue to be processed, relative to the maximum number of threads
+	 * allocated to run background tasks. Note: The actual number of max waiting jobs will never be less than
+	 * the number of processors in the system.
+	 */
+	@Value("${webapp.maxWaitingJobsPercent:25}")
+	private int maxWaitingJobsPercent;
+
+	private AtomicInteger waitingJobs = new AtomicInteger(0);
 	private ExecutorService executorService;
+	private int actualMaxThreads;
+	private int actualMaxWaitingJobs;
 
 	@PostConstruct
 	private void postConstruct() {
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
 		if (maxThreads > 0) {
-			executorService = newCachedThreadPool(maxThreads);
-			log.info("WebExecutorService initialized with maxThreads={}", maxThreads);
+			actualMaxThreads = max(availableProcessors, maxThreads);
+			actualMaxWaitingJobs = max(availableProcessors, actualMaxThreads * maxWaitingJobsPercent / 100);
+			executorService = newCachedThreadPool(actualMaxThreads);
+			log.info("WebExecutorService initialized with maxThreads={}, maxWaitingJobs={}", actualMaxThreads, actualMaxWaitingJobs);
 		} else {
-			int availableProcessors = Runtime.getRuntime().availableProcessors();
-			int calculatedMaxThreads = availableProcessors * maxThreadsPrProcessor;
-			executorService = newCachedThreadPool(calculatedMaxThreads);
-			log.info("WebExecutorService initialized with availableProcessors={}, maxThreadsPrProcessor={}, maxThreads={}", availableProcessors, maxThreadsPrProcessor, calculatedMaxThreads);
+			Assert.isTrue(maxThreadsPrProcessor > 0, "maxThreadsPrProcessor must be larger than zero");
+			actualMaxThreads = availableProcessors * maxThreadsPrProcessor;
+			actualMaxWaitingJobs = max(availableProcessors, actualMaxThreads * maxWaitingJobsPercent / 100);
+			executorService = newCachedThreadPool(actualMaxThreads);
+			log.info("WebExecutorService initialized with availableProcessors={}, maxThreadsPrProcessor={}, maxThreads={}, maxWaitingJobs={}", availableProcessors, maxThreadsPrProcessor, actualMaxThreads, actualMaxWaitingJobs);
 		}
 	}
 
@@ -63,7 +82,15 @@ public class WebExecutorService {
 	 * @see ExecutorService#execute(Runnable)
 	 */
 	public void execute(Runnable runnable) {
-		executorService.execute(runnable);
+		if (waitingJobs.get() >= actualMaxWaitingJobs) {
+			throw new ServerBusyException();
+		}
+
+		waitingJobs.incrementAndGet();
+		executorService.execute(() -> {
+			waitingJobs.decrementAndGet();
+			runnable.run();
+		});
 	}
 
 	/**
@@ -74,11 +101,11 @@ public class WebExecutorService {
 	 * @see RunnableWrappers#wrapRunnable(Runnable)
 	 */
 	public void executeWrapped(Runnable runnable) {
-		executorService.execute(wrapRunnable(runnable));
+		execute(wrapRunnable(runnable));
 	}
 
 	/**
-	 * Like <code>Executors.newCachedThreadPool()</code> but with a maximal number of threads.
+	 * Like <code>Executors.newCachedThreadPool()</code> but with a maximum number of threads.
 	 *
 	 * @see java.util.concurrent.Executors#newCachedThreadPool()
 	 */

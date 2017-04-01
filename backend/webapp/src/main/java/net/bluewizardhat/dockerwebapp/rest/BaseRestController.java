@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bluewizardhat.dockerwebapp.exception.ServerBusyException;
 import net.bluewizardhat.dockerwebapp.util.concurrent.WebExecutorService;
 
 @Slf4j
@@ -20,6 +21,12 @@ public abstract class BaseRestController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public void handleException(IllegalArgumentException e) {
+		log.warn("Unhandled exception: " + e.getMessage(), e);
+	}
+
+	@ExceptionHandler(ServerBusyException.class)
+	@ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
+	public void handleException(ServerBusyException e) {
 		log.warn("Unhandled exception: " + e.getMessage(), e);
 	}
 
