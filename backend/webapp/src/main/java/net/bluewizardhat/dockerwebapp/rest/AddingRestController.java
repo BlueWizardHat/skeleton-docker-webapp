@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import net.bluewizardhat.dockerwebapp.domainlogic.AddingService;
+import net.bluewizardhat.dockerwebapp.domain.logic.AddingService;
 
 @RestController
 public class AddingRestController extends BaseRestController {

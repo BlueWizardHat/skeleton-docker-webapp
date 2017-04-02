@@ -1,4 +1,4 @@
-package net.bluewizardhat.dockerwebapp.domainlogic;
+package net.bluewizardhat.dockerwebapp.domain.logic;
 
 import org.springframework.stereotype.Component;
 

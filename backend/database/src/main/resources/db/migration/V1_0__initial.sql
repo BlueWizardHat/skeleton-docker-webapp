@@ -1,5 +1,5 @@
 
-create sequence bananafish_id_seq increment 50;
+create sequence bananafish_id_seq increment 10;
 
 create table bananafish (
 	id			bigserial primary key,

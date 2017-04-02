@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -19,8 +20,8 @@ import lombok.Data;
 public class BananaFish {
 
 	@Id
-	@GeneratedValue(generator = "bananafish_id_generator")
-	@SequenceGenerator(name = "bananafish_id_generator", sequenceName = "bananafish_id_seq", allocationSize = 50)
+	@GeneratedValue(generator = "bananafish_id_generator", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "bananafish_id_generator", sequenceName = "bananafish_id_seq", allocationSize = 10)
 	private Long id;
 
 	private String name;
