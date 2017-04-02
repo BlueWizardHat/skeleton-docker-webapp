@@ -18,6 +18,10 @@
 		</dependency>
 		<dependency>
 			<groupId>net.bluewizardhat.dockerwebapp</groupId>
+			<artifactId>domain-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.bluewizardhat.dockerwebapp</groupId>
 			<artifactId>domain-logic</artifactId>
 		</dependency>
 		<dependency>

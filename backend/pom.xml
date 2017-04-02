@@ -39,6 +39,7 @@
 
 	<modules>
 		<module>database</module>
+		<module>domain-model</module>
 		<module>domain-logic</module>
 		<module>webapp</module>
 		<module>jacoco-report</module>
@@ -168,6 +169,11 @@
 			<dependency>
 				<groupId>net.bluewizardhat.dockerwebapp</groupId>
 				<artifactId>domain-logic</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.bluewizardhat.dockerwebapp</groupId>
+				<artifactId>domain-model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
