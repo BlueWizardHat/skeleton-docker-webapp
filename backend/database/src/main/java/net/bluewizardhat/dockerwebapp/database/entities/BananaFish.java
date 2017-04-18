@@ -6,8 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -20,12 +23,15 @@ import lombok.Data;
 public class BananaFish {
 
 	@Id
-	@GeneratedValue(generator = "bananafish_id_generator", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "bananafish_id_generator", sequenceName = "bananafish_id_seq", allocationSize = 10)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotNull
 	private String name;
 
 	private OffsetDateTime created;
 
+	@JsonIgnore
+	@Version
+	private Long version;
 }

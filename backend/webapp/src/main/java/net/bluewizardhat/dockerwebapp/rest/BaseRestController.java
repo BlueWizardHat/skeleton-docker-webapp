@@ -2,6 +2,8 @@ package net.bluewizardhat.dockerwebapp.rest;
 
 import java.util.concurrent.Callable;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +29,12 @@ public abstract class BaseRestController {
 	@ExceptionHandler(ServerBusyException.class)
 	@ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
 	public void handleException(ServerBusyException e) {
+		log.warn("Unhandled exception: " + e.getMessage(), e);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	public void handleException(ConstraintViolationException e) {
 		log.warn("Unhandled exception: " + e.getMessage(), e);
 	}
 

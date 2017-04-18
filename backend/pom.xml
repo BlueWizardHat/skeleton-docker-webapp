@@ -26,7 +26,7 @@
 		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
 
 		<!-- Ensure we have newest versions of lombok and guava -->
-		<lombok.version>1.16.14</lombok.version>
+		<lombok.version>1.16.16</lombok.version>
 		<guava.version>21.0</guava.version>
 
 		<!-- Stuff not in the BOM -->
@@ -34,6 +34,7 @@
 		<springfox-swagger.version>2.6.1</springfox-swagger.version>
 		<hibernate-jpa.version>1.0.0.Final</hibernate-jpa.version>
 		<csrf-token-filter.version>1.1</csrf-token-filter.version>
+		<argon2.version>2.2</argon2.version>
 		<postgres.version>9.4.1212</postgres.version>
 	</properties>
 
@@ -148,6 +149,11 @@
 				<groupId>org.hibernate.javax.persistence</groupId>
 				<artifactId>hibernate-jpa-2.1-api</artifactId>
 				<version>${hibernate-jpa.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.mkammerer</groupId>
+				<artifactId>argon2-jvm</artifactId>
+				<version>${argon2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
