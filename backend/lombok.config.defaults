@@ -63,12 +63,36 @@
 ## Key : lombok.addGeneratedAnnotation
 ## Type: boolean
 ##
-## Generate @javax.annotation.Generated on all generated code (default: true).
+## Generate @javax.annotation.Generated on all generated code (default: true). Deprecated, use 'lombok.addJavaxGeneratedAnnotation' instead.
 ##
 ## Examples:
 #
 # clear lombok.addGeneratedAnnotation
 # lombok.addGeneratedAnnotation = [false | true]
+#
+
+##
+## Key : lombok.addJavaxGeneratedAnnotation
+## Type: boolean
+##
+## Generate @javax.annotation.Generated on all generated code (default: follow lombok.addGeneratedAnnotation).
+##
+## Examples:
+#
+# clear lombok.addJavaxGeneratedAnnotation
+# lombok.addJavaxGeneratedAnnotation = [false | true]
+#
+
+##
+## Key : lombok.addLombokGeneratedAnnotation
+## Type: boolean
+##
+## Generate @lombok.Generated on all generated code (default: false).
+##
+## Examples:
+#
+# clear lombok.addLombokGeneratedAnnotation
+# lombok.addLombokGeneratedAnnotation = [false | true]
 #
 
 ##
