@@ -20,18 +20,19 @@ import lombok.ToString;
 
 @Data
 @Entity
-@Table(name = "user_table", uniqueConstraints = @UniqueConstraint(name = "user_login_key", columnNames = "login"))
+@Table(name = "user_table", uniqueConstraints = @UniqueConstraint(name = "user_name_key", columnNames = "user_name"))
 @ToString(exclude = "hashedPassword")
 public class User {
 
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
 	@Size(max = 64)
-	@Column(name = "login", nullable = false, length = 64)
-	private String loginName;
+	@Column(name = "user_name", nullable = false, length = 64)
+	private String userName;
 
 	@JsonIgnore
 	@NotNull

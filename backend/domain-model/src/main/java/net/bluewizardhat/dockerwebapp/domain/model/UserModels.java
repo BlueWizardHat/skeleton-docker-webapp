@@ -8,15 +8,18 @@ import lombok.Data;
 public class UserModels {
 
 	@Data
-	public static class UserCreateRequest {
+	public static class UserUpdateRequest {
 		@NotNull
 		@Size(max = 64)
-		private String loginName;
+		private String userName;
 
 		@NotNull
 		@Size(max = 128)
 		private String displayName;
+	}
 
+	@Data
+	public static class UserCreateRequest extends UserUpdateRequest {
 		@NotNull
 		@Size(max = 128)
 		private String email;
@@ -30,7 +33,7 @@ public class UserModels {
 	public static class UserPasswordUpdateRequest {
 		@NotNull
 		@Size(max = 64)
-		private String loginName;
+		private String userName;
 
 		@NotNull
 		@Size(min = 8)

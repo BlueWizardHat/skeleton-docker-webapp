@@ -8,5 +8,5 @@ import net.bluewizardhat.dockerwebapp.database.entities.User;
 
 @Repository
 public interface UserRepository extends ExtendedPagingAndSortingRepository<User, Long> {
-	public Optional<User> findByLoginName(String login);
+	public Optional<User> findByUserName(String userName);
 }

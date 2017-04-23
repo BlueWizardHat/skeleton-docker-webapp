@@ -1,7 +1,6 @@
 package net.bluewizardhat.dockerwebapp.config;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 
@@ -24,7 +23,6 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.genericModelSubstitutes(DeferredResult.class, ResponseEntity.class)
 				.directModelSubstitute(LocalDate.class, String.class)
-				.directModelSubstitute(LocalDateTime.class, String.class)
 				.directModelSubstitute(OffsetDateTime.class, String.class)
 				.directModelSubstitute(ZonedDateTime.class, String.class)
 				.select()

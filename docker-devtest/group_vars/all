@@ -1,6 +1,6 @@
 ---
   workspace_dir: "{{ playbook_dir }}/.."
-  deploy_dir: "{{ workspace_dir }}/.deploy"
+  deploy_dir: "{{ playbook_dir }}/.deploy"
 
   frontend_dir: "{{ workspace_dir }}/frontend"
   backend_dir: "{{ workspace_dir }}/backend"

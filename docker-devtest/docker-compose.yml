@@ -24,7 +24,7 @@ services:
     environment:
       - "JAVA_DEBUG=${BACKEND_DEBUG}"
     volumes:
-      - ../.deploy/backend.jar:/code/backend.jar
+      - ./.deploy/backend.jar:/code/backend.jar
       - ./app-config/backend.properties:/code/application.properties
       - ./app-config/log4j2.xml:/code/log4j2.xml
     links:
