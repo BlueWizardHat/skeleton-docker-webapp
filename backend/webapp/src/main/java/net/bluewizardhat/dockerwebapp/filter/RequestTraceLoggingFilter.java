@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.stereotype.Component;
@@ -23,43 +24,69 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RequestTraceLoggingFilter implements Filter {
 
-	private static final String contextKey = "logTraceId";
+	private static final String traceIdKey = "logTraceId";
+	private static final String startTimeKey = "requestStartTimeMillis";
+	private static final String[] ignoredPaths = { "///webjars/", "///swagger", "///v2/api-docs" };
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		log.debug("initialized");
+		log.debug("Initialized");
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String traceId = UUID.randomUUID().toString();
-		ThreadContext.put(contextKey, traceId);
-		request.setAttribute(contextKey, traceId);
-		long start = System.currentTimeMillis();
-
-		String method = "";
-		String path = "";
-
-		if (request instanceof HttpServletRequest) {
-			HttpServletRequest httpRequest = ((HttpServletRequest) request);
-			method = httpRequest.getMethod();
-			path = httpRequest.getRequestURI();
-			log.debug("{} '{}' - begin", method, path);
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+		if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
+			throw new ServletException("RequestTraceLoggingFilter only supports HTTP requests");
 		}
-
-		chain.doFilter(request, response);
-
-		if (request instanceof HttpServletRequest) {
-			long time = System.currentTimeMillis() - start;
-			log.debug("{} '{}' - end ({} ms)", method, path, time);
-		}
-
-		ThreadContext.remove(contextKey);
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		doFilterInternal(httpRequest, httpResponse, filterChain);
 	}
 
 	@Override
 	public void destroy() {
-		log.debug("destroyed");
+		log.debug("Destroyed");
+	}
+
+	private void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+		try {
+			String method = request.getMethod();
+			String path = request.getRequestURI();
+
+			for (String ignoredPath : ignoredPaths) {
+				if (path.startsWith(ignoredPath)) {
+					filterChain.doFilter(request, response);
+					return;
+				}
+			}
+
+			String traceId = (String) request.getAttribute(traceIdKey);
+			if (traceId == null) {
+				// First invocation
+				traceId = UUID.randomUUID().toString();
+				long start = System.currentTimeMillis();
+
+				ThreadContext.put(traceIdKey, traceId);
+				request.setAttribute(traceIdKey, traceId);
+				request.setAttribute(startTimeKey, start);
+
+				log.info("{} '{}' - begin", method, path);
+
+				filterChain.doFilter(request, response);
+
+				long time = System.currentTimeMillis() - start;
+				log.info("{} '{}' - end ({} ms)", method, path, time);
+			} else {
+				// Second invocation in case of DeferredResult
+				ThreadContext.put(traceIdKey, traceId);
+				filterChain.doFilter(request, response);
+				long start = (Long) request.getAttribute(startTimeKey);
+				long time = System.currentTimeMillis() - start;
+				log.info("{} '{}' - async end ({} ms)", method, path, time);
+			}
+		} finally {
+			ThreadContext.remove(traceIdKey);
+		}
 	}
 
 }
