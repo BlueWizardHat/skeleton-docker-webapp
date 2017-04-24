@@ -18,14 +18,15 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Tags all requests with a traceId used for logging.
+ * Logs requests and also tags all requests with a traceId that can be used for logging.
  */
 @Slf4j
 @Component
-public class RequestTraceLoggingFilter implements Filter {
+public class RequestLoggingFilter implements Filter {
 
-	private static final String traceIdKey = "logTraceId";
-	private static final String startTimeKey = "requestStartTimeMillis";
+	private static final String threadContextTraceIdKey = "loggingTraceId";
+	private static final String attributeTraceIdKey = "RequestLoggingFilter.loggingTraceId";
+	private static final String attributeStartTimeKey = "RequestLoggingFilter.requestStartTimeMillis";
 	private static final String[] ignoredPaths = { "///webjars/", "///swagger", "///v2/api-docs" };
 
 	@Override
@@ -60,15 +61,15 @@ public class RequestTraceLoggingFilter implements Filter {
 				}
 			}
 
-			String traceId = (String) request.getAttribute(traceIdKey);
+			String traceId = (String) request.getAttribute(attributeTraceIdKey);
 			if (traceId == null) {
 				// First invocation
 				traceId = UUID.randomUUID().toString();
 				long start = System.currentTimeMillis();
 
-				ThreadContext.put(traceIdKey, traceId);
-				request.setAttribute(traceIdKey, traceId);
-				request.setAttribute(startTimeKey, start);
+				ThreadContext.put(threadContextTraceIdKey, traceId);
+				request.setAttribute(attributeTraceIdKey, traceId);
+				request.setAttribute(attributeStartTimeKey, start);
 
 				log.info("{} '{}' - begin", method, path);
 
@@ -78,14 +79,14 @@ public class RequestTraceLoggingFilter implements Filter {
 				log.info("{} '{}' - end ({} ms)", method, path, time);
 			} else {
 				// Second invocation in case of DeferredResult
-				ThreadContext.put(traceIdKey, traceId);
+				ThreadContext.put(threadContextTraceIdKey, traceId);
 				filterChain.doFilter(request, response);
-				long start = (Long) request.getAttribute(startTimeKey);
+				long start = (Long) request.getAttribute(attributeStartTimeKey);
 				long time = System.currentTimeMillis() - start;
 				log.info("{} '{}' - async end ({} ms)", method, path, time);
 			}
 		} finally {
-			ThreadContext.remove(traceIdKey);
+			ThreadContext.remove(threadContextTraceIdKey);
 		}
 	}
 
