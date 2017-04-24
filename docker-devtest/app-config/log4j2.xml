@@ -3,7 +3,7 @@
 
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level trace=%X{loggingTraceId} %logger - %msg%n"/>
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level [%.12X{loggingTraceId}.%X{loggingUserId}] %logger - %msg%n"/>
 		</Console>
 	</Appenders>
 

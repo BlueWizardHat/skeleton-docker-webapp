@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * Logs requests and also tags all requests with a traceId that can be used for logging.
  */
 @Slf4j
+@Order(2)
 @Component
 public class RequestLoggingFilter implements Filter {
 

@@ -1,28 +1,31 @@
 package net.bluewizardhat.dockerwebapp.rest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import net.bluewizardhat.dockerwebapp.database.entities.User;
-import net.bluewizardhat.dockerwebapp.util.security.UserSecurityDetails;
+import net.bluewizardhat.dockerwebapp.domain.logic.security.UserSecurityDetails;
 
 @RestController
 @RequestMapping("/api/public")
 public class WhoAmIRestController extends BaseRestController {
 
-	@GetMapping(path = "/whoami", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public User whoami() {
-		if (SecurityContextHolder.getContext() != null
-				&& SecurityContextHolder.getContext().getAuthentication() != null
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserSecurityDetails) {
-			return ((UserSecurityDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
-		}
+	private static final ResponseEntity<User> NO_CONTENT = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
-		return null;
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "If the user is not logged in")
+	})
+	@GetMapping(path = "/whoami", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<User> whoami() {
+		return UserSecurityDetails.getLoggedInUser()
+				.map(u -> ResponseEntity.ok(u))
+				.orElse(NO_CONTENT);
 	}
 
 }

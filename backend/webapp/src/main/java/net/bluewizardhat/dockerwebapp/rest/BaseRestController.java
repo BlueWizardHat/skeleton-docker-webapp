@@ -11,9 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bluewizardhat.dockerwebapp.domain.logic.exception.NotFoundException;
 import net.bluewizardhat.dockerwebapp.exception.ServerBusyException;
 import net.bluewizardhat.dockerwebapp.util.concurrent.WebExecutorService;
 
+/**
+ * Base class for rest controllers with some default exception handlers and support for
+ * async processing.
+ */
 @Slf4j
 public abstract class BaseRestController {
 
@@ -35,6 +40,12 @@ public abstract class BaseRestController {
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public void handleException(ConstraintViolationException e) {
+		log.warn("Unhandled exception: " + e.getMessage(), e);
+	}
+
+	@ExceptionHandler(NotFoundException.class)
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	public void handleException(NotFoundException e) {
 		log.warn("Unhandled exception: " + e.getMessage(), e);
 	}
 

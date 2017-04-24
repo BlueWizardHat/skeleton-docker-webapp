@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.database.entities.User;
 import net.bluewizardhat.dockerwebapp.database.repositories.UserRepository;
+import net.bluewizardhat.dockerwebapp.domain.logic.security.UserSecurityDetails;
 
 @Slf4j
 @Service
