@@ -12,7 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.ThreadContext;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RequestLoggingFilter implements Filter {
 
-	private static final String threadContextTraceIdKey = "loggingTraceId";
+	private static final String mdcTraceIdKey = "loggingTraceId";
 	private static final String attributeTraceIdKey = "RequestLoggingFilter.loggingTraceId";
 	private static final String attributeStartTimeKey = "RequestLoggingFilter.requestStartTimeMillis";
 	private static final String[] ignoredPaths = { "///webjars/", "///swagger", "///v2/api-docs" };
@@ -67,7 +67,7 @@ public class RequestLoggingFilter implements Filter {
 				traceId = UUID.randomUUID().toString();
 				long start = System.currentTimeMillis();
 
-				ThreadContext.put(threadContextTraceIdKey, traceId);
+				MDC.put(mdcTraceIdKey, traceId);
 				request.setAttribute(attributeTraceIdKey, traceId);
 				request.setAttribute(attributeStartTimeKey, start);
 
@@ -79,14 +79,14 @@ public class RequestLoggingFilter implements Filter {
 				log.info("{} '{}' - end ({} ms)", method, path, time);
 			} else {
 				// Second invocation in case of DeferredResult
-				ThreadContext.put(threadContextTraceIdKey, traceId);
+				MDC.put(mdcTraceIdKey, traceId);
 				filterChain.doFilter(request, response);
 				long start = (Long) request.getAttribute(attributeStartTimeKey);
 				long time = System.currentTimeMillis() - start;
 				log.info("{} '{}' - async end ({} ms)", method, path, time);
 			}
 		} finally {
-			ThreadContext.remove(threadContextTraceIdKey);
+			MDC.remove(mdcTraceIdKey);
 		}
 	}
 
