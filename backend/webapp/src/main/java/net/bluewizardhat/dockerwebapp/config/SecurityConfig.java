@@ -1,4 +1,4 @@
-package net.bluewizardhat.dockerwebapp.web;
+package net.bluewizardhat.dockerwebapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
