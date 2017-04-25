@@ -2,6 +2,8 @@ package net.bluewizardhat.dockerwebapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,6 +14,8 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bluewizardhat.dockerwebapp.util.security.CustomAuthenticationProvider;
+import net.bluewizardhat.dockerwebapp.util.security.UserRoles;
 import net.bluewizardhat.dockerwebapp.util.security.UserdetailsServiceImpl;
 
 @Slf4j
@@ -30,13 +34,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/api/public/**").permitAll()
+				.antMatchers("/api/**").hasRole(UserRoles.USER_ROLE.getAuthority())
 				.antMatchers("/login/**").permitAll()
 				.antMatchers("/logout/**").permitAll()
 			.and()
 				.formLogin()
 					.loginPage("/login.html")
-					.loginProcessingUrl("/login")
-					.failureUrl("/login-error")
+					.loginProcessingUrl("/login/login")
+					.failureUrl("/login.html?login-error")
 		;
 
 		http.csrf().disable();
@@ -46,10 +51,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		log.debug("Configured http security");
 	}
 
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		CustomAuthenticationProvider provider = new CustomAuthenticationProvider();
+		provider.setUserDetailsService(userDetailsService);
+		provider.setPasswordEncoder(passwordEncoder);
+		return provider;
+	}
+
 	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-		log.debug("Configured login methods");
+	public void configureGlobal(AuthenticationManagerBuilder auth, AuthenticationProvider authenticationProvider) throws Exception {
+		auth
+			.authenticationProvider(authenticationProvider)
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(passwordEncoder);
+		log.debug("Configured authentication methods");
 	}
 
 }

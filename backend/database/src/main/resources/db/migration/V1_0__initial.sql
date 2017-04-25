@@ -9,5 +9,5 @@ create table user_table (
 	last_login				timestamp with time zone,
 	last_login_attempt		timestamp with time zone,
 	failed_login_attempts	integer,
-	version					bigint
+	version					bigint not null default 1
 );

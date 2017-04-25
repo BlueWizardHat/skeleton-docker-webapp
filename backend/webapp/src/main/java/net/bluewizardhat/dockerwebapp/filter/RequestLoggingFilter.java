@@ -39,7 +39,7 @@ public class RequestLoggingFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
-			throw new ServletException("RequestTraceLoggingFilter only supports HTTP requests");
+			throw new ServletException("RequestLoggingFilter only supports HTTP requests");
 		}
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;

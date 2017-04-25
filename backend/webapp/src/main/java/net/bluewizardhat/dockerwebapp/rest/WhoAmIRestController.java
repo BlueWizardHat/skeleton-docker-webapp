@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import net.bluewizardhat.dockerwebapp.database.entities.User;
-import net.bluewizardhat.dockerwebapp.domain.logic.security.UserSecurityDetails;
+import net.bluewizardhat.dockerwebapp.domain.logic.security.UserDetailsAdapter;
 
 @RestController
 @RequestMapping("/api/public")
@@ -23,8 +23,8 @@ public class WhoAmIRestController extends BaseRestController {
 	})
 	@GetMapping(path = "/whoami", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<User> whoami() {
-		return UserSecurityDetails.getLoggedInUser()
-				.map(u -> ResponseEntity.ok(u))
+		return UserDetailsAdapter.getLoggedInUser()
+				.map(u -> ResponseEntity.ok(u.getUser()))
 				.orElse(NO_CONTENT);
 	}
 

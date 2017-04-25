@@ -14,7 +14,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import net.bluewizardhat.dockerwebapp.domain.logic.security.UserSecurityDetails;
+import net.bluewizardhat.dockerwebapp.domain.logic.security.UserDetailsAdapter;
 
 /**
  * A filter that puts the id and username of the logged in user on the MDC.
@@ -34,7 +34,7 @@ public class UserLoggingFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		UserSecurityDetails.getLoggedInUser()
+		UserDetailsAdapter.getLoggedInUser().map(u -> u.getUser())
 			.ifPresent(u -> {
 				MDC.put(mdcUidKey, u.getId().toString());
 				MDC.put(mdcUsernameKey, u.getUserName());
