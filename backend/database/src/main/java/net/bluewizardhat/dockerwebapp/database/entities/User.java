@@ -3,13 +3,17 @@ package net.bluewizardhat.dockerwebapp.database.entities;
 import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,12 +21,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.ToString;
+import net.bluewizardhat.dockerwebapp.database.entities.embedded.TwoFactorDetails;
 
 @Data
 @Entity
 @Table(name = "user_table", uniqueConstraints = @UniqueConstraint(name = "user_name_key", columnNames = "user_name"))
 @ToString(exclude = "hashedPassword")
 public class User {
+
+	public enum UserType {
+		USER,
+		ADMIN
+	}
+
+	public enum UserState {
+		/**
+		 * Created but not validated
+		 */
+		INACTIVE,
+		/**
+		 * Fully active
+		 */
+		ACTIVE,
+		/**
+		 * Disabled
+		 */
+		DISABLED,
+	}
 
 	@JsonIgnore
 	@Id
@@ -51,8 +76,22 @@ public class User {
 	private String email;
 
 	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "user_type", nullable = false, length = 16)
+	private UserType type;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "user_state", nullable = false, length = 16)
+	private UserState state;
+
+	@Valid
+	@Embedded
+	private TwoFactorDetails twoFactorDetails;
+
+	@NotNull
 	@Column(name = "created", nullable = false)
-	private OffsetDateTime created = OffsetDateTime.now();
+	private OffsetDateTime created;
 
 	@Column(name = "last_login", nullable = true)
 	private OffsetDateTime lastLogin;

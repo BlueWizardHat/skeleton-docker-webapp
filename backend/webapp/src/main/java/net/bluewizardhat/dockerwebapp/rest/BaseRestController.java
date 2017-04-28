@@ -6,9 +6,11 @@ import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpResponseBodyAdvice;
 
 import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.domain.logic.exception.NotFoundException;
@@ -21,6 +23,18 @@ import net.bluewizardhat.dockerwebapp.util.concurrent.WebExecutorService;
  */
 @Slf4j
 public abstract class BaseRestController {
+
+	/**
+	 * Advice that converts a json response into jsonp by using a "_jsonp" parameter.
+	 * For example instead of calling "/api/public/user/current" you can call
+	 * "/api/public/user/current?_jsonp=setUser".
+	 */
+	@ControllerAdvice
+	public static class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
+		public JsonpAdvice() {
+			super("_jsonp");
+		}
+	}
 
 	@Autowired
 	private WebExecutorService executorService;

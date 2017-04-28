@@ -14,8 +14,8 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bluewizardhat.dockerwebapp.domain.logic.security.UserRoles;
 import net.bluewizardhat.dockerwebapp.util.security.CustomAuthenticationProvider;
-import net.bluewizardhat.dockerwebapp.util.security.UserRoles;
 import net.bluewizardhat.dockerwebapp.util.security.UserdetailsServiceImpl;
 
 @Slf4j
@@ -34,14 +34,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/api/public/**").permitAll()
-				.antMatchers("/api/**").hasRole(UserRoles.USER_ROLE.getAuthority())
-				.antMatchers("/login/**").permitAll()
+				.antMatchers("/api/admin/**").hasRole(UserRoles.ADMIN.name())
+				.antMatchers("/api/**").hasRole(UserRoles.USER.name())
+				.antMatchers("/login/login").permitAll()
+				.antMatchers("/login/**").hasRole(UserRoles.PRE_AUTH_USER.name())
 				.antMatchers("/logout/**").permitAll()
 			.and()
 				.formLogin()
 					.loginPage("/login.html")
 					.loginProcessingUrl("/login/login")
 					.failureUrl("/login.html?login-error")
+					.defaultSuccessUrl("/login.html?pre_auth", true)
+			.and()
+				.logout()
+					.logoutUrl("/logout")
 		;
 
 		http.csrf().disable();
@@ -64,7 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth
 			.authenticationProvider(authenticationProvider)
 			.userDetailsService(userDetailsService)
-			.passwordEncoder(passwordEncoder);
+			.passwordEncoder(passwordEncoder)
+			;
 		log.debug("Configured authentication methods");
 	}
 

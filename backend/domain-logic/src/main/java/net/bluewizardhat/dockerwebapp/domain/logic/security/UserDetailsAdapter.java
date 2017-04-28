@@ -3,22 +3,22 @@ package net.bluewizardhat.dockerwebapp.domain.logic.security;
 import static java.lang.Math.min;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.google.common.collect.ImmutableList;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.database.entities.User;
+import net.bluewizardhat.dockerwebapp.database.entities.User.UserState;
+import net.bluewizardhat.dockerwebapp.database.entities.User.UserType;
 
 @Slf4j
-@RequiredArgsConstructor
+@ToString
 public class UserDetailsAdapter implements UserDetails {
 	private static final long serialVersionUID = 7659826888768628523L;
 
@@ -28,21 +28,16 @@ public class UserDetailsAdapter implements UserDetails {
 	private static final int[] delays_in_minutes = { 0, 0, 2, 5, 10, 30, 60, 3*60, 12*60, 24*60 };
 
 	@Getter
-	@NonNull
 	private final User user;
 
 	@Getter
-	private final Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
+	private final ImmutableList<GrantedAuthority> authorities;
 
-	public static Optional<UserDetailsAdapter> getLoggedInUser() {
-		if (SecurityContextHolder.getContext() != null
-				&& SecurityContextHolder.getContext().getAuthentication() != null
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsAdapter) {
-			return Optional.of(((UserDetailsAdapter) SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
-		}
-
-		return Optional.empty();
+	public UserDetailsAdapter(@NonNull User user) {
+		this.user = user;
+		authorities = user.getTwoFactorDetails() != null ?
+				UserRoles.PRE_AUTH_ROLES :
+					user.getType() == UserType.ADMIN ? UserRoles.ADMIN_ROLES : UserRoles.USER_ROLES;
 	}
 
 	@Override
@@ -80,7 +75,7 @@ public class UserDetailsAdapter implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return user.getState() == UserState.ACTIVE;
 	}
 
 }
