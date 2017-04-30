@@ -24,8 +24,8 @@ import net.bluewizardhat.dockerwebapp.domain.logic.security.SecurityContextHelpe
 @Component
 public class UserLoggingFilter implements Filter {
 
-	private static final String mdcUidKey = "loggingUserId";
-	private static final String mdcUsernameKey = "loggingUserName";
+	private static final String mdcUidKey = "userId";
+	private static final String mdcUsernameKey = "userName";
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
