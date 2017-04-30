@@ -37,10 +37,14 @@ public enum UserRoles {
 			ImmutableList.of(USER.authority, ADMIN.authority);
 
 	@Getter
+	private final String roleName;
+
+	@Getter
 	private final GrantedAuthority authority;
 
 	private UserRoles() {
-		authority = new SimpleGrantedAuthority("ROLE_" + name());
+		roleName = "ROLE_" + name();
+		authority = new SimpleGrantedAuthority(roleName);
 	}
 
 }

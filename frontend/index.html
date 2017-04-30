@@ -1,6 +1,134 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
+		<meta charset="UTF-8">
+		<title>Skeleton Webapp / by BlueWizardHat</title>
+
+		<!-- jQuery -->
+		<script src="//code.jquery.com/jquery-3.2.1.min.js" type="application/javascript"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+			integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+			integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="application/javascript"
+			integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<!-- Knockout -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js" type="application/javascript"
+			integrity="sha384-/EjRuG6YTb6zCFou+DBnYCi5u9E1RjUMJanyGOL7DUYLp6wSCUuHNhd58uoGj7jh" crossorigin="anonymous"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" type="application/javascript"
+			integrity="sha384-5iaafnDCmIZLLNfCHYJwy/FQZf6AXVLgSx8wPvUvkOOOFk7ODxEXwdfxgHW3dv4a" crossorigin="anonymous"></script>
+
+
+		<link rel="stylesheet" href="css/main.css">
+		<script src="js/main.js" type="application/javascript"></script>
 	</head>
+
 	<body>
+
+		<!-- Header -->
+		<div class="header">
+			<div class="container container-narrow">
+				<p class="pull-left">Skeleton Webapp</p>
+
+				<p class="pull-right muted">
+					<span data-bind="if: !loginDetails.loggedIn()">
+						Not logged in | <a data-bind="click: function () { prepareLoginFlow(); }">Log in</a>
+					</span>
+					<span data-bind="if: loginDetails.loggedIn()">
+						<span data-bind="text: loginDetails.fullyAuthenticated() ? 'Logged' : 'Partially logged'"></span> in as <b><span data-bind="text: loginDetails.displayName()"></span></b> | 
+						<a data-bind="click: function () { logout(); }">Log out</a>
+					</span>
+				</p>
+			</div>
+		</div>
+		<!-- /Header -->
+
+		<!-- Page content -->
+		<div class="container container-narrow">
+			<div id="page-content">
+				<div class="clear-header"></div>
+
+				<!-- Front page -->
+				<div data-bind="if: pageFlow() === 'main'">
+					<div class="clear-header"></div>
+					<h3>Welcome</h3>
+					<div class="clear-header"></div>
+	
+					<div class="col-sm-offset-2 col-sm-5">
+						<p>Blah blah blah</p>
+					</div>
+				</div>
+				<!-- Front page -->
+
+				<!-- Login/create functionality -->
+				<div data-bind="if: pageFlow() === 'login'">
+					<div class="clear-header"></div>
+					<h3>Login</h3>
+					<div class="clear-header"></div>
+
+					<div data-bind="if: pageSubFlow() === 'password'">
+						<form class="form-horizontal" role="form" onsubmit="return false;">
+							<div class="form-group" id="userName-group">
+								<label for="username" class="col-sm-2 control-label">User name</label>
+								<div class="col-sm-5">
+									<input type="text" class="form-control" id="username" placeholder="User name" data-bind="value: loginFields.username">
+								</div>
+							</div>
+							<div class="form-group" id="password-group">
+								<label for="password" class="col-sm-2 control-label">Password</label>
+								<div class="col-sm-5">
+									<input type="password" class="form-control" id="password" placeholder="Password" data-bind="value: loginFields.password">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-5">
+									<button type="submit" class="btn btn-primary" data-bind="click: function () { doPasswordLogin(); }">Sign in</button>
+									<button type="button" class="btn btn-default" data-bind="click: function () { loginCancel(); }">Cancel</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div data-bind="if: pageSubFlow() === 'totp'">
+						<form class="form-horizontal" role="form" onsubmit="return false;">
+							<div class="form-group" id="userName-group">
+								<label for="otp" class="col-sm-2 control-label">Authenticator code</label>
+								<div class="col-sm-5">
+									<input type="text" class="form-control" id="totp" placeholder="code" data-bind="value: otpFields.otp">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-5">
+									<button type="submit" class="btn btn-primary" data-bind="click: function () { doTotpLogin(); }">Sign in</button>
+									<button type="button" class="btn btn-default" data-bind="click: function () { loginCancel(); }">Cancel</button>
+								</div>
+							</div>
+						</form>
+					</div>
+
+				</div>
+				<!-- /Login/create functionality -->
+
+
+				<!-- Viewmodel Debug info -->
+				<div class="clear-footer"></div>
+				<pre data-bind="text: ko.toJSON($data, null, 2)"></pre>
+				<!-- /Viewmodel Debug info -->
+
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div class="clear-header"></div>
+		<div class="footer">
+			<div class="container container-narrow">
+				<p class="pull-left muted credits">Source code available at <a href="https://github.com/BlueWizardHat/skeleton-docker-webapp">https://github.com/BlueWizardHat/skeleton-docker-webapp</a></p>
+				<p class="pull-right muted">@BlueWizardHat</p>
+			</div>
+		</div>
+		<!-- /Footer -->
 	</body>
 </html>

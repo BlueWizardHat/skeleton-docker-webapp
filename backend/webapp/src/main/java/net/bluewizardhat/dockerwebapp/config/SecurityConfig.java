@@ -1,7 +1,10 @@
 package net.bluewizardhat.dockerwebapp.config;
 
+import static net.bluewizardhat.dockerwebapp.domain.logic.security.UserRoles.ADMIN;
+import static net.bluewizardhat.dockerwebapp.domain.logic.security.UserRoles.PRE_AUTH_USER;
+import static net.bluewizardhat.dockerwebapp.domain.logic.security.UserRoles.USER;
+
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +26,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfFilter;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
@@ -30,8 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.domain.logic.security.UserDetailsAdapter;
-import net.bluewizardhat.dockerwebapp.domain.logic.security.UserRoles;
-import net.bluewizardhat.dockerwebapp.rest.data.UserDetails;
+import net.bluewizardhat.dockerwebapp.rest.data.LoginDetails;
 import net.bluewizardhat.dockerwebapp.util.security.CustomAuthenticationProvider;
 import net.bluewizardhat.dockerwebapp.util.security.UserdetailsServiceImpl;
 
@@ -50,7 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private ObjectMapper objectMapper;
 
 	private class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-
 		@Override
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 			if (authentication instanceof UsernamePasswordAuthenticationToken) {
@@ -61,10 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					response.setStatus(HttpStatus.OK.value());
 					response.getOutputStream();
 					objectMapper.writeValue(response.getOutputStream(),
-							new UserDetails(adapter.getUser(),
-									adapter.getAuthorities().stream()
-										.map(a -> a.getAuthority())
-										.collect(Collectors.toList())));
+							new LoginDetails(adapter.getUser(),
+									!adapter.getAuthorities().contains(PRE_AUTH_USER.getAuthority())));
 					return;
 				}
 			}
@@ -81,15 +81,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 	}
 
+	private class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
+		@Override
+		public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+			response.setStatus(HttpStatus.NO_CONTENT.value());
+		}
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
 				.antMatchers("/api/public/**").permitAll()
-				.antMatchers("/api/admin/**").hasRole(UserRoles.ADMIN.name())
-				.antMatchers("/api/**").hasRole(UserRoles.USER.name())
+				.antMatchers("/api/admin/**").hasRole(ADMIN.name())
+				.antMatchers("/api/**").hasRole(USER.name())
 				.antMatchers("/login/login").permitAll()
-				.antMatchers("/login/**").hasRole(UserRoles.PRE_AUTH_USER.name())
+				.antMatchers("/login/**").hasRole(PRE_AUTH_USER.name())
 				.antMatchers("/logout/**").permitAll()
 			.and()
 				.formLogin()
@@ -100,10 +107,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.logout()
 					.logoutUrl("/logout")
+					.logoutSuccessHandler(new CustomLogoutSuccessHandler())
 					.deleteCookies("JSESSIONID")
 		;
 
-		http.csrf().disable();
 		// Add CSRF token to response headers
 		http.addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
 
