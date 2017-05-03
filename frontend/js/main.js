@@ -115,7 +115,7 @@
 	};
 
 	viewModel.logout = function () {
-		ajaxPost('/logout', '', function (data, xhr) {
+		ajaxPost('/api/public/logout', '', function (data, xhr) {
 			console.log("data", data, xhr);
 			getLoginDetails();
 		});
@@ -132,7 +132,7 @@
 	viewModel.doPasswordLogin = function () {
 		var logindata = ko.mapping.toJS(viewModel.loginFields);
 		console.log("Posting data", logindata);
-		ajaxPost('/login/login', logindata, function (data, xhr) {
+		ajaxPost('/api/public/login/login', logindata, function (data, xhr) {
 			console.log("data", data, xhr);
 			if (data) {
 				if (data.fullyAuthenticated) {
@@ -148,7 +148,7 @@
 	viewModel.doTotpLogin = function () {
 		var otp = viewModel.otpFields.otp();
 		console.log("Posting data", otp);
-		ajaxPost('/login/totp', otp, function (data, xhr) {
+		ajaxPost('/api/public/login/totp', otp, function (data, xhr) {
 			console.log("data", data, xhr);
 			viewModel.pageFlow('main');
 			viewModel.otpFields.otp('');

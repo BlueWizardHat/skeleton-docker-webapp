@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RequestLoggingFilter implements Filter {
 
 	private static final String mdcConversationIdKey = "conversationId";
-	private static final String conversationIdCookieName = "conversationId";
+	private static final String conversationIdCookieName = "sessionConversationId";
 
 	private static final String mdcTraceIdKey = "requestTraceId";
 	private static final String attributeTraceIdKey = "RequestLoggingFilter.requestTraceId";
