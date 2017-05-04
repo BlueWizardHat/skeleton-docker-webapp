@@ -46,7 +46,7 @@
 	'use strict';
 
 	var viewModel = {
-		// Which parts of the flow to display ('frony', 'login', 'userInfo', 'attachGoogle', 'attachYubi')
+		// Which parts of the flow to display ('main', 'login', 'userInfo', 'attachGoogle')
 		pageFlow: ko.observable('main'),
 		pageSubFlow: ko.observable(),
 
@@ -73,12 +73,12 @@
 
 	function ajaxGet(url, doneFunc) {
 		console.log('GET ' + url);
-		$.getJSON(url).done(doneFunc);
+		return $.getJSON(url).done(doneFunc);
 	}
 
 	function ajaxPost(url, data, doneFunc) {
 		console.log('POST ' + url);
-		$.post(url, data).done(doneFunc);
+		return $.post(url, data).done(doneFunc);
 	}
 
 	function getLoginDetails() {

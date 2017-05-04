@@ -2,9 +2,6 @@ package net.bluewizardhat.dockerwebapp.rest;
 
 import static net.bluewizardhat.dockerwebapp.domain.logic.security.UserRoles.PRE_AUTH_USER;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,16 +27,18 @@ public class CurrentUserRestController extends BaseRestController {
 	public ResponseEntity<LoginDetails> currentUser() {
 		return SecurityContextHelper.getLoggedInUser()
 				.map(u -> ResponseEntity.ok(
-						new LoginDetails(u.getUser(),
-								!SecurityContextHelper.getRoles().contains(PRE_AUTH_USER.getAuthority()))))
+						new LoginDetails(u, !SecurityContextHelper.getRoles().contains(PRE_AUTH_USER.getAuthority()))))
 				.orElse(NO_CONTENT);
 	}
 
-	@GetMapping(path = "/roles", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public List<String> roles() {
-		return SecurityContextHelper.getRoles().stream()
-				.map(auth -> auth.getAuthority())
-				.collect(Collectors.toList());
-	}
+//	/**
+//	 * Returns the roles (mostly for debug)
+//	 */
+//	@GetMapping(path = "/roles", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//	public List<String> roles() {
+//		return SecurityContextHelper.getRoles().stream()
+//				.map(auth -> auth.getAuthority())
+//				.collect(Collectors.toList());
+//	}
 
 }

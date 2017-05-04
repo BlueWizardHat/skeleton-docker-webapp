@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
 import lombok.experimental.UtilityClass;
+import net.bluewizardhat.dockerwebapp.database.entities.User;
 
 @UtilityClass
 public class SecurityContextHelper {
@@ -18,7 +19,7 @@ public class SecurityContextHelper {
 	/**
 	 * Returns details about the currently logged in user if any.
 	 */
-	public static Optional<UserDetailsAdapter> getLoggedInUser() {
+	public static Optional<UserDetailsAdapter> getLoggedInUserDetails() {
 		if (SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
 				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsAdapter) {
@@ -26,6 +27,13 @@ public class SecurityContextHelper {
 		}
 
 		return Optional.empty();
+	}
+
+	/**
+	 * Returns the currently logged in user if any.
+	 */
+	public static Optional<User> getLoggedInUser() {
+		return getLoggedInUserDetails().map(details -> details.getUser());
 	}
 
 	/**
@@ -55,7 +63,7 @@ public class SecurityContextHelper {
 	}
 
 	private static void grantAuthorities(List<GrantedAuthority> authorities) {
-		Assert.state(getLoggedInUser().isPresent(), "Cannot grant authorities if not authenticated");
+		Assert.state(getLoggedInUserDetails().isPresent(), "Cannot grant authorities if not authenticated");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), authorities);
 		SecurityContextHolder.getContext().setAuthentication(newAuth);

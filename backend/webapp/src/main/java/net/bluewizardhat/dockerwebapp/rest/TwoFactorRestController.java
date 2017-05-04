@@ -13,7 +13,7 @@ import net.bluewizardhat.dockerwebapp.domain.logic.security.SecurityContextHelpe
 
 @Slf4j
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/public/login")
 public class TwoFactorRestController extends BaseRestController {
 
 	/**
@@ -26,7 +26,7 @@ public class TwoFactorRestController extends BaseRestController {
 	}
 
 	private void grantAuthorities() {
-		User user = SecurityContextHelper.getLoggedInUser().orElseThrow(IllegalStateException::new).getUser();
+		User user = SecurityContextHelper.getLoggedInUser().orElseThrow(IllegalStateException::new);
 		if (user.getType() == UserType.ADMIN) {
 			SecurityContextHelper.grantAdminAuthority();
 			log.debug("Granted user 'admin' roles");

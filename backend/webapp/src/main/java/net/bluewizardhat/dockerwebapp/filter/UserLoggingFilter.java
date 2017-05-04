@@ -34,7 +34,7 @@ public class UserLoggingFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		SecurityContextHelper.getLoggedInUser().map(u -> u.getUser())
+		SecurityContextHelper.getLoggedInUser()
 			.ifPresent(u -> {
 				MDC.put(mdcUidKey, u.getId().toString());
 				MDC.put(mdcUsernameKey, u.getUserName());
