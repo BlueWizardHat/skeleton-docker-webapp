@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.2.RELEASE</version>
+		<version>1.5.3.RELEASE</version>
 	</parent>
 
 	<name>DockerWebApp</name>
@@ -22,8 +22,8 @@
 		<java.version>1.8</java.version>
 
 		<!-- Spring dependency versions -->
-		<spring.bom.version>2.0.8.RELEASE</spring.bom.version>
-		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+		<spring.bom.version>Brussels-SR2</spring.bom.version>
+		<spring.boot.version>1.5.3.RELEASE</spring.boot.version>
 
 		<!-- Ensure we have newest versions of lombok and guava -->
 		<lombok.version>1.16.16</lombok.version>
