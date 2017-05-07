@@ -28,6 +28,9 @@ cd /code
 cp "/code/${jar_file}" "${JAVA_RUN_DIR}"
 COMMAND="java ${DEBUGGING_FLAGS}-Duser.timezone=UTC -jar ${JAVA_RUN_DIR}/${jar_file}"
 
+echo ""
+java -version
+echo ""
 echo "Running jar file ${jar_file}:"
 echo ""
 echo ">   ${COMMAND}"
