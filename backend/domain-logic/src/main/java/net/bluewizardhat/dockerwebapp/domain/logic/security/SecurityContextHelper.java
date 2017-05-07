@@ -21,11 +21,12 @@ public class SecurityContextHelper {
 	 */
 	public static Optional<UserDetailsAdapter> getLoggedInUserDetails() {
 		if (SecurityContextHolder.getContext().getAuthentication() != null
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsAdapter) {
-			return Optional.of(((UserDetailsAdapter) SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
+				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
+			if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsAdapter) {
+				return Optional.of(((UserDetailsAdapter) SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
+			}
+			throw new IllegalStateException("The principal is supposed to be of type UserDetailsAdapter");
 		}
-
 		return Optional.empty();
 	}
 

@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				}
 			}
 			log.warn("Unknown authentication type; '{}'", authentication);
-			response.setStatus(HttpStatus.NO_CONTENT.value());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 	}
 
@@ -77,14 +77,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 			log.debug("Authentication Failure: {} '{}'", exception.getClass().getSimpleName(), exception.getMessage());
-			response.setStatus(HttpStatus.FORBIDDEN.value());
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}
 
 	private class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 		@Override
 		public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-			response.setStatus(HttpStatus.NO_CONTENT.value());
+			response.setStatus(HttpStatus.OK.value());
 		}
 	}
 
