@@ -7,6 +7,8 @@
 		<!-- jQuery -->
 		<script src="//code.jquery.com/jquery-3.2.1.min.js" type="application/javascript"
 			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" type="application/javascript"
+			integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
 		<!-- Bootstrap -->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -22,7 +24,11 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" type="application/javascript"
 			integrity="sha384-5iaafnDCmIZLLNfCHYJwy/FQZf6AXVLgSx8wPvUvkOOOFk7ODxEXwdfxgHW3dv4a" crossorigin="anonymous"></script>
 
+		<!-- Sping & Ladda -->
+		<script src="js/spin.ladda.all.min.js" type="application/javascript"></script>
+		<link rel="stylesheet" href="css/ladda-themeless.min.css">
 
+		<!-- -->
 		<link rel="stylesheet" href="css/main.css">
 		<script src="js/main.js" type="application/javascript"></script>
 	</head>
@@ -72,21 +78,21 @@
 
 					<div data-bind="if: pageSubFlow() === 'password'">
 						<form class="form-horizontal" role="form" onsubmit="return false;">
-							<div class="form-group" id="userName-group">
+							<div class="form-group" id="userName-group" data-bind="css: { 'has-error': !loginPage.userNameValidates() }">
 								<label for="username" class="col-sm-2 control-label">User name</label>
 								<div class="col-sm-5">
-									<input type="text" class="form-control" id="username" placeholder="User name" data-bind="value: loginFields.username">
+									<input type="text" class="form-control" id="username" placeholder="User name" data-bind="value: loginPage.loginFields.username">
 								</div>
 							</div>
-							<div class="form-group" id="password-group">
+							<div class="form-group" id="password-group" data-bind="css: { 'has-error': !loginPage.passwordValidates() }">
 								<label for="password" class="col-sm-2 control-label">Password</label>
 								<div class="col-sm-5">
-									<input type="password" class="form-control" id="password" placeholder="Password" data-bind="value: loginFields.password">
+									<input type="password" class="form-control" id="password" placeholder="Password" data-bind="value: loginPage.loginFields.password">
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-5">
-									<button type="submit" class="btn btn-primary" data-bind="click: function () { doPasswordLogin(); }">Sign in</button>
+									<button id="loginButton" type="submit" class="btn btn-primary ladda-button" data-style="expand-left" data-bind="click: function () { doPasswordLogin(); }"><span class="ladda-label">Sign in</span></button>
 									<button type="button" class="btn btn-default" data-bind="click: function () { loginCancel(); }">Cancel</button>
 								</div>
 							</div>
@@ -94,7 +100,7 @@
 					</div>
 					<div data-bind="if: pageSubFlow() === 'totp'">
 						<form class="form-horizontal" role="form" onsubmit="return false;">
-							<div class="form-group" id="userName-group">
+							<div class="form-group" id="totp-group" data-bind="css: { 'has-error': !loginPage.totpValidates() }">
 								<label for="otp" class="col-sm-2 control-label">Authenticator code</label>
 								<div class="col-sm-5">
 									<input type="text" class="form-control" id="totp" placeholder="code" data-bind="value: otpFields.otp">

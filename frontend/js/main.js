@@ -45,10 +45,16 @@
 (function ($, ko) {
 	'use strict';
 
+	function emptyString(s) {
+		return !s || s.trim() === "";
+	}
+
 	var viewModel = {
 		// Which parts of the flow to display ('main', 'login', 'userInfo', 'attachGoogle')
 		pageFlow: ko.observable('main'),
 		pageSubFlow: ko.observable(),
+
+		formValidation: ko.observable(false),
 
 		loginDetails: {
 			userName: ko.observable(),
@@ -61,7 +67,10 @@
 			lastLogin: ko.observable(),
 			loggedIn: ko.observable(false),
 			fullyAuthenticated: ko.observable(false)
-		},
+		}
+	};
+
+	viewModel.loginPage = {
 		loginFields: {
 			username: ko.observable(),
 			password: ko.observable()
@@ -70,6 +79,14 @@
 			otp: ko.observable()
 		}
 	};
+
+	viewModel.loginPage.userNameValidates = ko.computed(function () {
+		return !viewModel.formValidation() || !emptyString(viewModel.loginPage.loginFields.username());
+	});
+	viewModel.loginPage.passwordValidates = ko.computed(function () {
+		return !viewModel.formValidation() || !emptyString(viewModel.loginPage.loginFields.password());
+	});
+
 
 	function ajaxGet(url, doneFunc) {
 		console.log('GET ' + url);
@@ -86,7 +103,7 @@
 		ajaxGet('/api/public/user/current/', function (data) {
 			console.log("data", data);
 			var loginDetails = viewModel.loginDetails;
-			if (data) {
+			if (data && data.user) {
 				console.log("Performing mapping");
 				ko.mapping.fromJS(data.user, {}, loginDetails);
 				loginDetails.loggedIn(true);
@@ -107,9 +124,9 @@
 	}
 
 	viewModel.prepareLoginFlow = function () {
-		viewModel.loginFields.username('');
-		viewModel.loginFields.password('');
-		viewModel.otpFields.otp('');
+		viewModel.loginPage.loginFields.username('');
+		viewModel.loginPage.loginFields.password('');
+		viewModel.loginPage.otpFields.otp('');
 		viewModel.pageSubFlow('password');
 		viewModel.pageFlow('login');
 	};
@@ -130,11 +147,16 @@
 	}
 
 	viewModel.doPasswordLogin = function () {
-		var logindata = ko.mapping.toJS(viewModel.loginFields);
+		viewModel.formValidation(true);
+		var l = $('#loginButton').ladda();
+		l.ladda('start');
+		var logindata = ko.mapping.toJS(viewModel.loginPage.loginFields);
 		console.log("Posting data", logindata);
 		ajaxPost('/api/public/login/login', logindata, function (data, xhr) {
 			console.log("data", data, xhr);
 			if (data) {
+				viewModel.loginPage.loginFields.username('');
+				viewModel.loginPage.loginFields.password('');
 				if (data.fullyAuthenticated) {
 					viewModel.pageFlow('main');
 				} else {
@@ -142,16 +164,17 @@
 				}
 			}
 			getLoginDetails();
-		});
+		}).always(function () { l.ladda('stop'); });
 	};
 
 	viewModel.doTotpLogin = function () {
-		var otp = viewModel.otpFields.otp();
+		viewModel.formValidation(true);
+		var otp = viewModel.loginPage.otpFields.otp();
 		console.log("Posting data", otp);
 		ajaxPost('/api/public/login/totp', otp, function (data, xhr) {
 			console.log("data", data, xhr);
 			viewModel.pageFlow('main');
-			viewModel.otpFields.otp('');
+			viewModel.loginPage.otpFields.otp('');
 			getLoginDetails();
 		});
 	};
