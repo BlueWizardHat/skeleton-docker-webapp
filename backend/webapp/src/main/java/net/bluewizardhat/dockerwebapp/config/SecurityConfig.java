@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				}
 			}
 			log.warn("Unknown authentication type; '{}'", authentication);
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			throw new ServletException("Unknown authentication type: " + authentication);
 		}
 	}
 

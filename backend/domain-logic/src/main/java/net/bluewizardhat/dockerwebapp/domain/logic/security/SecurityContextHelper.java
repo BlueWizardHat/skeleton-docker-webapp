@@ -22,10 +22,15 @@ public class SecurityContextHelper {
 	public static Optional<UserDetailsAdapter> getLoggedInUserDetails() {
 		if (SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
-			if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetailsAdapter) {
-				return Optional.of(((UserDetailsAdapter) SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if (principal instanceof UserDetailsAdapter) {
+				return Optional.of(((UserDetailsAdapter) principal));
+			} else if (principal instanceof String) {
+				// spring "anonymousUser"
+				return Optional.empty();
 			}
-			throw new IllegalStateException("The principal is supposed to be of type UserDetailsAdapter");
+			throw new IllegalStateException(
+					"The principal is supposed to be of type UserDetailsAdapter but was " + principal.getClass().getName() + ": " + principal.toString());
 		}
 		return Optional.empty();
 	}
