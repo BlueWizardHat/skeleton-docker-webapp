@@ -24,7 +24,7 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" type="application/javascript"
 			integrity="sha384-5iaafnDCmIZLLNfCHYJwy/FQZf6AXVLgSx8wPvUvkOOOFk7ODxEXwdfxgHW3dv4a" crossorigin="anonymous"></script>
 
-		<!-- Sping & Ladda -->
+		<!-- Spin & Ladda -->
 		<script src="js/spin.ladda.all.min.js" type="application/javascript"></script>
 		<link rel="stylesheet" href="css/ladda-themeless.min.css">
 
@@ -58,25 +58,28 @@
 			<div id="page-content">
 				<div class="clear-header"></div>
 
-				<!-- Front page -->
-				<div data-bind="if: pageFlow() === 'main'">
+				<!-- Front/Welcome page -->
+				<div id="welcomePage" style="display: none;" data-bind="visible: true">
 					<div class="clear-header"></div>
 					<h3>Welcome</h3>
 					<div class="clear-header"></div>
 	
-					<div class="col-sm-offset-2 col-sm-5">
-						<p>Blah blah blah</p>
+					<div class="col-sm-offset-0 col-sm-5">
+						<span>Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah
+						Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah
+						Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah
+						Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah Blah blah blah</span>
 					</div>
 				</div>
-				<!-- Front page -->
+				<!-- Front/Welcome page -->
 
 				<!-- Login/create functionality -->
-				<div data-bind="if: pageFlow() === 'login'">
+				<div id="loginPage" style="display: none;">
 					<div class="clear-header"></div>
 					<h3>Login</h3>
 					<div class="clear-header"></div>
 
-					<div data-bind="if: pageSubFlow() === 'password'">
+					<div data-bind="slideVisible: pageSubFlow() === 'password'">
 						<form class="form-horizontal" role="form" onsubmit="return false;">
 							<div class="form-group" id="userName-group" data-bind="css: { 'has-error': !loginPage.userNameValidates() }">
 								<label for="username" class="col-sm-2 control-label">User name</label>
@@ -98,17 +101,17 @@
 							</div>
 						</form>
 					</div>
-					<div data-bind="if: pageSubFlow() === 'totp'">
+					<div data-bind="slideVisible: pageSubFlow() === 'totp'">
 						<form class="form-horizontal" role="form" onsubmit="return false;">
 							<div class="form-group" id="totp-group" data-bind="css: { 'has-error': !loginPage.totpValidates() }">
 								<label for="otp" class="col-sm-2 control-label">Authenticator code</label>
 								<div class="col-sm-5">
-									<input type="text" class="form-control" id="totp" placeholder="code" data-bind="value: otpFields.otp">
+									<input type="text" class="form-control" id="totp" placeholder="code" data-bind="value: loginPage.otpFields.otp">
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-5">
-									<button type="submit" class="btn btn-primary" data-bind="click: function () { doTotpLogin(); }">Sign in</button>
+									<button id="totpButton" type="submit" class="btn btn-primary ladda-button" data-style="expand-left" data-bind="click: function () { doTotpLogin(); }"><span class="ladda-label">Verify</span></button>
 									<button type="button" class="btn btn-default" data-bind="click: function () { loginCancel(); }">Cancel</button>
 								</div>
 							</div>

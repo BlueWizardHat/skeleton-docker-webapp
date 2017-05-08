@@ -41,6 +41,39 @@
 }(window.jQuery));
 
 
+// knockout extensions
+(function (ko) {
+	'use strict';
+
+	ko.bindingHandlers.fadeVisible = {
+		init: function(element, valueAccessor) {
+			// Initially set the element to be instantly visible/hidden depending on the value
+			var value = valueAccessor();
+			$(element).toggle(ko.unwrap(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+		},
+		update: function(element, valueAccessor) {
+			// Whenever the value subsequently changes, slowly fade the element in or out
+			var value = valueAccessor();
+			ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut();
+		}
+	};
+
+	ko.bindingHandlers.slideVisible = {
+		init: function(element, valueAccessor) {
+			// Initially set the element to be instantly visible/hidden depending on the value
+			var value = valueAccessor();
+			$(element).slideToggle(ko.unwrap(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+		},
+		update: function(element, valueAccessor) {
+			// Whenever the value subsequently changes, slowly fade the element in or out
+			var value = valueAccessor();
+			ko.unwrap(value) ? $(element).slideDown() : $(element).slideUp();
+		}
+	};
+
+}(window.ko));
+
+
 // Main functionality
 (function ($, ko) {
 	'use strict';
@@ -49,9 +82,11 @@
 		return !s || s.trim() === "";
 	}
 
+	var pages = [ '#loginPage', '#welcomePage', '#userInfoPage' ];
+	var currentPage = '#welcomePage';
+
 	var viewModel = {
-		// Which parts of the flow to display ('main', 'login', 'userInfo', 'attachGoogle')
-		pageFlow: ko.observable('main'),
+		pageFlow: ko.observable('#welcomePage'),
 		pageSubFlow: ko.observable(),
 
 		formValidation: ko.observable(false),
@@ -80,11 +115,23 @@
 		}
 	};
 
+	viewModel.pageFlow.subscribe(function (newPage) {
+		if (newPage !== currentPage) {
+			$(currentPage).hide('fade', {}, 200, function () {
+				$(newPage).show('fade', {}, 200);
+			});
+			currentPage = newPage;
+		}
+	});
+
 	viewModel.loginPage.userNameValidates = ko.computed(function () {
 		return !viewModel.formValidation() || !emptyString(viewModel.loginPage.loginFields.username());
 	});
 	viewModel.loginPage.passwordValidates = ko.computed(function () {
 		return !viewModel.formValidation() || !emptyString(viewModel.loginPage.loginFields.password());
+	});
+	viewModel.loginPage.totpValidates = ko.computed(function () {
+		return !viewModel.formValidation() || !emptyString(viewModel.loginPage.otpFields.otp());
 	});
 
 
@@ -101,8 +148,8 @@
 	function getLoginDetails() {
 		console.log("requesting currentUser");
 		ajaxGet('/api/public/user/current/', function (data) {
-			console.log("data", data);
 			var loginDetails = viewModel.loginDetails;
+			console.log("data", data);
 			if (data && data.user) {
 				console.log("Performing mapping");
 				ko.mapping.fromJS(data.user, {}, loginDetails);
@@ -128,7 +175,7 @@
 		viewModel.loginPage.loginFields.password('');
 		viewModel.loginPage.otpFields.otp('');
 		viewModel.pageSubFlow('password');
-		viewModel.pageFlow('login');
+		viewModel.pageFlow('#loginPage');
 	};
 
 	viewModel.logout = function () {
@@ -136,21 +183,21 @@
 			console.log("data", data, xhr);
 			getLoginDetails();
 		});
-		viewModel.pageFlow('main');
+		viewModel.pageFlow('#welcomePage');
 	};
 
 	viewModel.loginCancel = function () {
 		if (viewModel.loginDetails.loggedIn()) {
 			viewModel.logout();
 		}
-		viewModel.pageFlow('main');
+		viewModel.pageFlow('#welcomePage');
 	}
 
 	viewModel.doPasswordLogin = function () {
-		viewModel.formValidation(true);
 		var l = $('#loginButton').ladda();
-		l.ladda('start');
 		var logindata = ko.mapping.toJS(viewModel.loginPage.loginFields);
+		viewModel.formValidation(true);
+		l.ladda('start');
 		console.log("Posting data", logindata);
 		ajaxPost('/api/public/login/login', logindata, function (data, xhr) {
 			console.log("data", data, xhr);
@@ -158,7 +205,7 @@
 				viewModel.loginPage.loginFields.username('');
 				viewModel.loginPage.loginFields.password('');
 				if (data.fullyAuthenticated) {
-					viewModel.pageFlow('main');
+					viewModel.pageFlow('#welcomePage');
 				} else {
 					viewModel.pageSubFlow('totp');
 				}
@@ -173,7 +220,7 @@
 		console.log("Posting data", otp);
 		ajaxPost('/api/public/login/totp', otp, function (data, xhr) {
 			console.log("data", data, xhr);
-			viewModel.pageFlow('main');
+			viewModel.pageFlow('#welcomePage');
 			viewModel.loginPage.otpFields.otp('');
 			getLoginDetails();
 		});
