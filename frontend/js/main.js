@@ -117,8 +117,8 @@
 
 	viewModel.pageFlow.subscribe(function (newPage) {
 		if (newPage !== currentPage) {
-			$(currentPage).hide('fade', {}, 200, function () {
-				$(newPage).show('fade', {}, 200);
+			$(currentPage).hide('fade', {}, 250, function () {
+				$(newPage).show('fade', {}, 250);
 			});
 			currentPage = newPage;
 		}
