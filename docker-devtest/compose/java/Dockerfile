@@ -1,7 +1,7 @@
-FROM ubuntu:16.04
+FROM openjdk:8-jre
 
 ADD . /setup
-RUN bash -c 'source /setup/setup.sh'
+RUN bash -c 'chmod +x /setup/*.sh'
 
 ENV LANG en_US.UTF-8  
 ENV LANGUAGE en_US:en  
