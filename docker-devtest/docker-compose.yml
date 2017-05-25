@@ -3,7 +3,7 @@ version: '2'
 services:
   # Frontend
   frontend:
-    image: devtest_apache
+    image: skeleton_apache
     build: ./compose/apache
     ports:
       - "81:80"
@@ -15,7 +15,7 @@ services:
 
   # Backend
   backend:
-    image: devtest_java
+    image: skeleton_java
     build: ./compose/java
     command: /setup/run-jar.sh backend.jar postgresql:5432 2
     ports:
