@@ -22,7 +22,7 @@
       - copyjar
 
   - name: Restart backend and frontend docker containers
-    command: docker restart dockerdevtest_backend_1 dockerdevtest_frontend_1
+    shell: docker kill dockerdevtest_backend_1 dockerdevtest_frontend_1; docker restart dockerdevtest_backend_1 dockerdevtest_frontend_1
     when: redeploy | bool
     async: 45
     poll: 0
