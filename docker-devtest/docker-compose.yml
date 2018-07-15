@@ -14,7 +14,7 @@ services:
 
   # Backend
   backend:
-    image: skeleton_java
+    image: skeleton_java10
     build: ./compose/java
     command: /setup/run-jar.sh backend.jar postgresql:5432 2
     ports:
