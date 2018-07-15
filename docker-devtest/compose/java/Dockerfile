@@ -1,4 +1,4 @@
-FROM openjdk:10-jre
+FROM openjdk:10-jre-slim
 
 ADD . /setup
 RUN bash -c 'chmod +x /setup/*.sh'
