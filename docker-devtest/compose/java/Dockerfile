@@ -10,6 +10,3 @@ EXPOSE 4000
 
 # Standard tomcat port
 EXPOSE 8080
-
-# AJP port
-EXPOSE 8009
