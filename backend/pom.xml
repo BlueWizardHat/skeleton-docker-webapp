@@ -21,7 +21,6 @@
 		<java.version>10</java.version>
 
 		<!-- Spring dependency versions -->
-		<spring.bom.version>Cairo-RELEASE</spring.bom.version>
 		<spring.boot.version>2.0.3.RELEASE</spring.boot.version>
 
 		<!-- Ensure we have newest versions of lombok and guava -->
@@ -94,15 +93,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-parent</artifactId>
 				<version>${spring.boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<!-- Library versions from Spring-BOM  -->
-			<dependency>
-				<groupId>io.spring.platform</groupId>
-				<artifactId>platform-bom</artifactId>
-				<version>${spring.bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
