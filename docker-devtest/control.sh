@@ -13,10 +13,10 @@ function mvnbuild() {
 	else
 		skipTestsArg=""
 	fi
+	mvncmd="mvn clean verify -P demo$skipTestsArg"
 
 	echo -e "\n\e[1;33m* Building in:\e[0m \e[32m${backenddir}\e[0m"
 	cd $backenddir
-	mvncmd="mvn clean package -P demo$skipTestsArg"
 	echo -e "\e[1;33m* Command:    \e[0m \e[32m${mvncmd}\e[0m\n"
 	$mvncmd
 	maven_exit_code=$?
@@ -37,7 +37,7 @@ while [[ $# -gt 0 ]]; do
 		build)
 			mvnbuild yes
 			;;
-		skiptests?)
+		skiptests)
 			mvnbuild skip
 			;;
 		start|up)
