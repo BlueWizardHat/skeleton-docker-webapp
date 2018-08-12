@@ -6,8 +6,8 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Domain Logic</name>
-	<artifactId>domain-logic</artifactId>
+	<name>Common Utils</name>
+	<artifactId>common-utils</artifactId>
 	<packaging>jar</packaging>
 	<description>Domain Logic Module</description>
 
@@ -21,28 +21,8 @@
 			<artifactId>spring-beans</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.mkammerer</groupId>
-			<artifactId>argon2-jvm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.bluewizardhat.dockerwebapp</groupId>
-			<artifactId>domain-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.bluewizardhat.dockerwebapp</groupId>
-			<artifactId>common-utils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.bluewizardhat.dockerwebapp</groupId>
-			<artifactId>database</artifactId>
 		</dependency>
 	</dependencies>
 </project>

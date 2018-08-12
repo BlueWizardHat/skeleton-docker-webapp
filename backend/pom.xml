@@ -38,6 +38,7 @@
 	</properties>
 
 	<modules>
+		<module>common-utils</module>
 		<module>database</module>
 		<module>domain-model</module>
 		<module>domain-logic</module>
@@ -165,6 +166,11 @@
 			<dependency>
 				<groupId>net.bluewizardhat.dockerwebapp</groupId>
 				<artifactId>webapp</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.bluewizardhat.dockerwebapp</groupId>
+				<artifactId>common-utils</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

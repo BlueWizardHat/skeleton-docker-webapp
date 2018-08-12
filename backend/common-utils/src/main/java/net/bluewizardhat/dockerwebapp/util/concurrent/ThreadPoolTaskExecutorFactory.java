@@ -3,6 +3,7 @@ package net.bluewizardhat.dockerwebapp.util.concurrent;
 import java.util.Map;
 
 import org.slf4j.MDC;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.concurrent.DelegatingSecurityContextRunnable;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -12,12 +13,22 @@ import lombok.experimental.UtilityClass;
  * Utility class for wrapping Runnables.
  */
 @UtilityClass
-public class RunnableWrappers {
+public class ThreadPoolTaskExecutorFactory {
+
+	public static ThreadPoolTaskExecutor threadPoolTaskExecutor(int corePoolSize, int maxPoolSize) {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(corePoolSize);
+		executor.setMaxPoolSize(maxPoolSize);
+		executor.setQueueCapacity(0);
+		executor.setTaskDecorator(ThreadPoolTaskExecutorFactory::wrapRunnable);
+		executor.initialize();
+		return executor;
+	}
 
 	/**
 	 * Wraps a Runnable with both wrapSecurityContext and wrapThreadContext.
 	 */
-	public static Runnable wrapRunnable(final Runnable runnable) {
+	private static Runnable wrapRunnable(final Runnable runnable) {
 		return wrapSecurityContext(wrapLoggingContext(runnable));
 	}
 
@@ -25,7 +36,7 @@ public class RunnableWrappers {
 	 * Wraps a Runnable so that the executing thread will retain the spring security context of the
 	 * originating thread.
 	 */
-	public static Runnable wrapSecurityContext(final Runnable runnable) {
+	private static Runnable wrapSecurityContext(final Runnable runnable) {
 		return DelegatingSecurityContextRunnable.create(runnable, SecurityContextHolder.getContext());
 	}
 
@@ -33,7 +44,7 @@ public class RunnableWrappers {
 	 * Wraps a Runnable so that the executing thread will retain the logging context of the
 	 * originating thread.
 	 */
-	public static Runnable wrapLoggingContext(final Runnable runnable) {
+	private static Runnable wrapLoggingContext(final Runnable runnable) {
 		final Map<String, String> context = MDC.getCopyOfContextMap();
 
 		return () -> {

@@ -1,7 +1,6 @@
 package net.bluewizardhat.dockerwebapp.util.security;
 
 import java.time.OffsetDateTime;
-import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -20,16 +19,10 @@ import net.bluewizardhat.dockerwebapp.database.repositories.UserRepository;
 import net.bluewizardhat.dockerwebapp.domain.logic.security.UserDetailsAdapter;
 
 /**
- * This AuthenticationProvider extends DaoAuthenticationProvider with a login delay to prevent
- * user guessing. And also registers both successsful and failed login attempts on the user entity.
+ * This AuthenticationProvider registers both successsful and failed login attempts on the user entity.
  */
 @Slf4j
 public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
-
-	private static final int min_login_time = 1500;
-	private static final int max_login_random_delay = 1500;
-
-	private Random random = new Random();
 
 	@Autowired
 	private UserRepository userRepository;
@@ -37,13 +30,10 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 	@Override
 	@Transactional(dontRollbackOn = AuthenticationException.class)
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		long startTime = System.currentTimeMillis();
 		try {
 			Authentication result = super.authenticate(authentication);
-			delay(startTime);
 			return result;
 		} catch (AuthenticationException e) {
-			delay(startTime);
 			throw e;
 		}
 	}
@@ -56,22 +46,6 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 		} catch (AuthenticationException e) {
 			registerLoginFailure(((UserDetailsAdapter) userDetails).getUser());
 			throw e;
-		}
-	}
-
-	/**
-	 * Introduces an artificial delay in the login process. That way an attacker cannot
-	 * determine if a particular login exists simply by measuring the response time.
-	 */
-	private void delay(long startTime) {
-		long time = System.currentTimeMillis() - startTime;
-		long delay = min_login_time - time + random.nextInt(max_login_random_delay);
-		if (delay > 0) {
-			log.debug("Login took {} milliseconds (actual), delaying for {} (total {})", time, delay, time+delay);
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-			}
 		}
 	}
 

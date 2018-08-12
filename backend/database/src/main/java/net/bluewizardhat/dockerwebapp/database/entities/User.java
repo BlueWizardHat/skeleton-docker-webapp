@@ -29,12 +29,12 @@ import net.bluewizardhat.dockerwebapp.database.entities.embedded.TwoFactorDetail
 @ToString(exclude = "hashedPassword")
 public class User {
 
-	public enum UserType {
+	public static enum UserType {
 		USER,
 		ADMIN
 	}
 
-	public enum UserState {
+	public static enum UserState {
 		/**
 		 * Created but not validated
 		 */

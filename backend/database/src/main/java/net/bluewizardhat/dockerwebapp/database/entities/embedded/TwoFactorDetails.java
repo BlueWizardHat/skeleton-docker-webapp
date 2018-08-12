@@ -20,7 +20,11 @@ public class TwoFactorDetails {
 		/**
 		 * TOTP (also known as Google Authenticator)
 		 */
-		TOTP
+		TOTP,
+		/**
+		 * FIDO U2F
+		 */
+		U2F
 	}
 
 	@NotNull
