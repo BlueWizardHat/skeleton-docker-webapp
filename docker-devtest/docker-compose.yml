@@ -28,6 +28,8 @@ services:
       - ./app-config/log4j2.xml:/code/log4j2.xml
     links:
       - postgresql
+    depends_on:
+      - postgresql
 
   # Database
   postgresql:
