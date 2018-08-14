@@ -13,10 +13,10 @@ import net.bluewizardhat.dockerwebapp.util.concurrent.ThreadPoolTaskExecutorFact
 @Configuration
 public class AsyncConfig /* extends AsyncConfigurerSupport */ {
 
-	@Value("${webapp.defaultCorePoolSize:50}")
+	@Value("${webapp.default.corePoolSize:0}")
 	private int corePoolSize;
 
-	@Value("${webapp.defaultMaxPoolSize:50}")
+	@Value("${webapp.default.maxPoolSize:50}")
 	private int maxPoolSize;
 
 	/**
@@ -28,7 +28,7 @@ public class AsyncConfig /* extends AsyncConfigurerSupport */ {
 	 *
 	 * Note that it is unwise to set this value higher than corePoolSize as new threads are only spawned if the queue is full.
 	 */
-	@Value("${webapp.defaultQueueCapacity:50}")
+	@Value("${webapp.default.queueCapacity:50}")
 	private int queueCapacity;
 
 	/**

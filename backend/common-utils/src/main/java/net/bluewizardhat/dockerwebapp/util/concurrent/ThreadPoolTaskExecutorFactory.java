@@ -18,10 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ThreadPoolTaskExecutorFactory {
 
 	public static ThreadPoolTaskExecutor threadPoolTaskExecutor(int corePoolSize, int maxPoolSize, int queueCapacity) {
-		log.info("Creating ThreadPoolTaskExecutor(corePoolSize={}, maxPoolSize={}, queueCapacity={})", corePoolSize, maxPoolSize, queueCapacity);
+		boolean allowCoreThreadTimeOut = (corePoolSize == 0);
+		int actualCorePoolSize = corePoolSize == 0 ? maxPoolSize : corePoolSize;
+		log.info("Creating ThreadPoolTaskExecutor(corePoolSize={}, maxPoolSize={}, queueCapacity={}, allowCoreThreadTimeOut={})", actualCorePoolSize, maxPoolSize, queueCapacity, allowCoreThreadTimeOut);
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setAllowCoreThreadTimeOut(true);
-		executor.setCorePoolSize(corePoolSize);
+		executor.setAllowCoreThreadTimeOut(allowCoreThreadTimeOut);
+		executor.setCorePoolSize(actualCorePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(queueCapacity);
 		executor.setTaskDecorator(ThreadPoolTaskExecutorFactory::wrapRunnable);
