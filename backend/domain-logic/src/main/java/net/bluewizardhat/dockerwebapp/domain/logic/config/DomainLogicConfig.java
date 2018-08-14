@@ -11,13 +11,9 @@ import net.bluewizardhat.dockerwebapp.util.concurrent.ThreadPoolTaskExecutorFact
 @Configuration
 public class DomainLogicConfig {
 
-	@Bean(name = "domainLogicExecutor1")
+	@Bean(name = "domainLogicExecutor")
 	public ThreadPoolTaskExecutor domainLogicExecutor1() {
-		return ThreadPoolTaskExecutorFactory.threadPoolTaskExecutor(1, 20);
+		return ThreadPoolTaskExecutorFactory.threadPoolTaskExecutor(1, 20, 0);
 	}
 
-	@Bean(name = "domainLogicExecutor2")
-	public ThreadPoolTaskExecutor domainLogicExecutor2() {
-		return ThreadPoolTaskExecutorFactory.threadPoolTaskExecutor(1, 20);
-	}
 }

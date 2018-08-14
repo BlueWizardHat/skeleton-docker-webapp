@@ -12,20 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class AsyncTestService  {
 
-	public String doManuallyAsync() {
-		log.info("doManuallyAsync: {}", SecurityContextHolder.getContext());
-		return "manual\n";
-	}
-
-	@Async("domainLogicExecutor1")
-	public ListenableFuture<String> doSpringAsync1() {
-		log.info("doSpringAsync1: {}", SecurityContextHolder.getContext());
+	@Async // ("domainLogicExecutor")
+	public ListenableFuture<String> doSpringAsync() {
+		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return new AsyncResult<>("spring1\n");
 	}
 
-	@Async("domainLogicExecutor2")
-	public ListenableFuture<String> doSpringAsync2() {
-		log.info("doSpringAsync1: {}", SecurityContextHolder.getContext());
-		return new AsyncResult<>("spring2\n");
-	}
 }

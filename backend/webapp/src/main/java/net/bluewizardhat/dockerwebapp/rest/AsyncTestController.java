@@ -20,15 +20,10 @@ public class AsyncTestController extends BaseRestController {
 	@Autowired
 	private AsyncTestService service;
 
-	@GetMapping(path = "/spring1", produces = MediaType.TEXT_PLAIN_VALUE)
-	public @ResponseBody DeferredResult<String> doSpringAsync1() {
+	@GetMapping(path = "/spring", produces = MediaType.TEXT_PLAIN_VALUE)
+	public @ResponseBody DeferredResult<String> doSpringAsync() {
 		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
-		return deferredResult(service.doSpringAsync1());
+		return deferredResult(service.doSpringAsync());
 	}
 
-	@GetMapping(path = "/spring2", produces = MediaType.TEXT_PLAIN_VALUE)
-	public @ResponseBody DeferredResult<String> doSpringAsync2() {
-		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
-		return deferredResult(service.doSpringAsync2());
-	}
 }
