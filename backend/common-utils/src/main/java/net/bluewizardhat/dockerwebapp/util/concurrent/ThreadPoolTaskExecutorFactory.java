@@ -19,7 +19,7 @@ public class ThreadPoolTaskExecutorFactory {
 
 	public static ThreadPoolTaskExecutor threadPoolTaskExecutor(int corePoolSize, int maxPoolSize, int queueCapacity) {
 		boolean allowCoreThreadTimeOut = (corePoolSize == 0);
-		int actualCorePoolSize = corePoolSize == 0 ? maxPoolSize : corePoolSize;
+		int actualCorePoolSize = (corePoolSize == 0) ? maxPoolSize : corePoolSize;
 		log.info("Creating ThreadPoolTaskExecutor(corePoolSize={}, maxPoolSize={}, queueCapacity={}, allowCoreThreadTimeOut={})", actualCorePoolSize, maxPoolSize, queueCapacity, allowCoreThreadTimeOut);
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setAllowCoreThreadTimeOut(allowCoreThreadTimeOut);

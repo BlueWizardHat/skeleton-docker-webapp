@@ -25,8 +25,6 @@ public class AsyncConfig /* extends AsyncConfigurerSupport */ {
 	 * any other value will lead to a SynchronousQueue instance.
 	 * @see java.util.concurrent.LinkedBlockingQueue
 	 * @see java.util.concurrent.SynchronousQueue
-	 *
-	 * Note that it is unwise to set this value higher than corePoolSize as new threads are only spawned if the queue is full.
 	 */
 	@Value("${webapp.default.queueCapacity:50}")
 	private int queueCapacity;
