@@ -4,6 +4,8 @@ import java.util.concurrent.RejectedExecutionException;
 
 import javax.validation.ConstraintViolationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -12,15 +14,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.domain.logic.exception.NotFoundException;
 
 /**
  * Base class for rest controllers with some default exception handlers and support for
  * async processing.
  */
-@Slf4j
 public abstract class BaseRestController {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)

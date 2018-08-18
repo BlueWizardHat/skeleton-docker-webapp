@@ -11,9 +11,11 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.domain.logic.AsyncTestService;
+import net.bluewizardhat.dockerwebapp.util.logging.LogInvocation;
 
 @Slf4j
 @Component
+@LogInvocation
 @RequestMapping("/api/public/async")
 public class AsyncTestController extends BaseRestController {
 
@@ -23,7 +25,7 @@ public class AsyncTestController extends BaseRestController {
 	@GetMapping(path = "/spring", produces = MediaType.TEXT_PLAIN_VALUE)
 	public @ResponseBody DeferredResult<String> doSpringAsync() {
 		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
-		return deferredResult(service.doSpringAsync());
+		return deferredResult(service.doSpringAsync(null, null));
 	}
 
 }
