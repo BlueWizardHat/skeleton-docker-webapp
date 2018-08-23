@@ -1,5 +1,9 @@
 package net.bluewizardhat.dockerwebapp.domain.logic;
 
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,9 +16,9 @@ import net.bluewizardhat.dockerwebapp.util.logging.Sensitive;
 
 @Slf4j
 @Component
+@LogInvocation
 public class AsyncTestService  {
 
-	@LogInvocation(logParameterValues = true)
 	@Async // ("domainLogicExecutor")
 	public ListenableFuture<String> doSpringAsync(String someStrinh, @Sensitive String sensitiveString) {
 		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
@@ -26,4 +30,10 @@ public class AsyncTestService  {
 		return new AsyncResult<>("spring1\n");
 	}
 
+	@Async
+	public void logMdcContentsMeow() {
+		Map<String, String> mdcCopy = new TreeMap<>(MDC.getCopyOfContextMap());
+		log.info("MDC contains {} entries; security context {}", mdcCopy.size(), SecurityContextHolder.getContext());
+		mdcCopy.forEach((key, value) -> log.info("MDC key='{}', value='{}'", key, value));
+	}
 }

@@ -30,12 +30,13 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 	@Override
 	@Transactional(dontRollbackOn = AuthenticationException.class)
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		try {
-			Authentication result = super.authenticate(authentication);
-			return result;
-		} catch (AuthenticationException e) {
-			throw e;
-		}
+		return super.authenticate(authentication);
+//		try {
+//			Authentication result = super.authenticate(authentication);
+//			return result;
+//		} catch (AuthenticationException e) {
+//			throw e;
+//		}
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class ThreadPoolTaskExecutorFactory {
 		executor.setCorePoolSize(actualCorePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(queueCapacity);
-		executor.setTaskDecorator(ThreadPoolTaskExecutorFactory::wrapRunnable);
+		executor.setTaskDecorator(ThreadPoolTaskExecutorFactory::wrapRunnable); // spring-cloud-sleuth breaks this
 		return executor;
 	}
 
