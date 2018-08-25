@@ -46,7 +46,7 @@ public class LoggingAspect {
 	}
 
 	@Around("methodOfAnnotatedClass() || annotatedMethod()")
-	public Object loggingAround(ProceedingJoinPoint jp) throws Throwable {
+	public Object logInvocation(ProceedingJoinPoint jp) throws Throwable {
 		long startTime = System.currentTimeMillis();
 		Object[] args = jp.getArgs();
 		MethodSignature methodSignature = (MethodSignature) jp.getSignature();

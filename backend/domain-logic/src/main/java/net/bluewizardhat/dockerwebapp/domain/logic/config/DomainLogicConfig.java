@@ -13,7 +13,7 @@ public class DomainLogicConfig {
 
 	@Bean(name = "domainLogicExecutor")
 	public ThreadPoolTaskExecutor domainLogicExecutor1() {
-		return ThreadPoolTaskExecutorFactory.threadPoolTaskExecutor(0, 20, 0);
+		return ThreadPoolTaskExecutorFactory.cachedThreadPool(20);
 	}
 
 }

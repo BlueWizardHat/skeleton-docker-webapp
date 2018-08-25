@@ -39,7 +39,7 @@ public class AsyncTestController extends BaseRestController {
 	public void logMdcContents() {
 		Map<String, String> mdcCopy = new TreeMap<>(MDC.getCopyOfContextMap());
 		log.info("MDC contains {} entries; security context {}", mdcCopy.size(), SecurityContextHolder.getContext());
-		mdcCopy. forEach((key, value) -> log.info("MDC key='{}', value='{}'", key, value));
+		mdcCopy.forEach((key, value) -> log.info("MDC key='{}', value='{}'", key, value));
 		service.logMdcContentsMeow();
 	}
 }

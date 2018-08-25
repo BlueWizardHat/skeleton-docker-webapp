@@ -17,7 +17,23 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 public class ThreadPoolTaskExecutorFactory {
 
-	public static ThreadPoolTaskExecutor threadPoolTaskExecutor(int corePoolSize, int maxPoolSize, int queueCapacity) {
+	public static ThreadPoolTaskExecutor fixedThreadPool(int threads) {
+		return threadPoolTaskExecutor(threads, threads, Integer.MAX_VALUE);
+	}
+
+	public static ThreadPoolTaskExecutor fixedThreadPool(int threads, int queueCapacity) {
+		return threadPoolTaskExecutor(threads, threads, queueCapacity);
+	}
+
+	public static ThreadPoolTaskExecutor cachedThreadPool(int maxThreads) {
+		return threadPoolTaskExecutor(0, maxThreads, 0);
+	}
+
+	public static ThreadPoolTaskExecutor cachedThreadPool(int maxThreads, int queueCapacity) {
+		return threadPoolTaskExecutor(0, maxThreads, queueCapacity);
+	}
+
+	private static ThreadPoolTaskExecutor threadPoolTaskExecutor(int corePoolSize, int maxPoolSize, int queueCapacity) {
 		boolean allowCoreThreadTimeOut = (corePoolSize == 0);
 		int actualCorePoolSize = (corePoolSize == 0) ? maxPoolSize : corePoolSize;
 		log.info("Creating ThreadPoolTaskExecutor(corePoolSize={}, maxPoolSize={}, queueCapacity={}, allowCoreThreadTimeOut={})", actualCorePoolSize, maxPoolSize, queueCapacity, allowCoreThreadTimeOut);
@@ -26,7 +42,7 @@ public class ThreadPoolTaskExecutorFactory {
 		executor.setCorePoolSize(actualCorePoolSize);
 		executor.setMaxPoolSize(maxPoolSize);
 		executor.setQueueCapacity(queueCapacity);
-		executor.setTaskDecorator(ThreadPoolTaskExecutorFactory::wrapRunnable); // spring-cloud-sleuth breaks this
+		executor.setTaskDecorator(ThreadPoolTaskExecutorFactory::wrapRunnable);
 		return executor;
 	}
 

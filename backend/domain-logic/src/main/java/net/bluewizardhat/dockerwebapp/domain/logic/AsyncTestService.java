@@ -19,7 +19,7 @@ import net.bluewizardhat.dockerwebapp.util.logging.Sensitive;
 @LogInvocation
 public class AsyncTestService  {
 
-	@Async // ("domainLogicExecutor")
+	@Async("domainLogicExecutor")
 	public ListenableFuture<String> doSpringAsync(String someStrinh, @Sensitive String sensitiveString) {
 		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
 		try {
@@ -30,10 +30,11 @@ public class AsyncTestService  {
 		return new AsyncResult<>("spring1\n");
 	}
 
-	@Async
+	@Async("domainLogicExecutor")
 	public void logMdcContentsMeow() {
 		Map<String, String> mdcCopy = new TreeMap<>(MDC.getCopyOfContextMap());
 		log.info("MDC contains {} entries; security context {}", mdcCopy.size(), SecurityContextHolder.getContext());
 		mdcCopy.forEach((key, value) -> log.info("MDC key='{}', value='{}'", key, value));
+		//log.info("Trace", new RuntimeException("Trace"));
 	}
 }
