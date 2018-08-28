@@ -136,6 +136,37 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>net.bluewizardhat.dockerwebapp</groupId>
+									<artifactId>webapp</artifactId>
+									<version>${project.version}</version>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<destFileName>spring-boot-app.jar</destFileName>
+								</artifactItem>
+								<artifactItem>
+									<groupId>net.bluewizardhat.dockerwebapp</groupId>
+									<artifactId>webapp</artifactId>
+									<version>${project.version}</version>
+									<outputDirectory>${project.basedir}/../../docker-devtest/.deploy</outputDirectory>
+									<destFileName>backend.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

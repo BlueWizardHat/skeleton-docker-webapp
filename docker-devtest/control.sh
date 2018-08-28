@@ -23,9 +23,6 @@ function mvnbuild() {
 	if [ $maven_exit_code != 0 ]; then
 		exit $maven_exit_code
 	fi
-	mkdir -p ${devtestdir}/.deploy
-	echo -n "Copying: "
-	cp -v ${backenddir}/webapp/target/webapp-*-SNAPSHOT.jar ${devtestdir}/.deploy/backend.jar
 }
 
 
