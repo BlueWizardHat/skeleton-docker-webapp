@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class MethodNameMdcEnricherAspect {
-	private static final String componentNameIdKey = "componentName";
 	private static final String methodNameIdKey = "publicMethodName";
 
 	@Pointcut("execution(public * *.*(..))")
@@ -27,14 +26,11 @@ public class MethodNameMdcEnricherAspect {
 		MethodSignature methodSignature = (MethodSignature) jp.getSignature();
 		String methodName = methodSignature.getMethod().getName();
 		String previousMethodName = MDC.get(methodNameIdKey);
-		String previousComponentName = MDC.get(componentNameIdKey);
 		try {
-			MDC.put(componentNameIdKey, methodSignature.getDeclaringTypeName());
 			MDC.put(methodNameIdKey, methodName);
 			return jp.proceed();
 		} finally {
 			restoreMdcValue(methodNameIdKey, previousMethodName);
-			restoreMdcValue(componentNameIdKey, previousComponentName);
 		}
 	}
 

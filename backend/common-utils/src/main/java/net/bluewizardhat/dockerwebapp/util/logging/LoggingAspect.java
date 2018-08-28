@@ -26,11 +26,18 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Component
 public class LoggingAspect {
 
+	@LogInvocation
+	private static class LogInvocationDefaults {
+	}
+
 	@Value("${net.bluewizardhat.logging.aspect.msgPrefix:true}")
 	private boolean msgPrefix;
 
 	private Field deferredResultTimeoutField;
 	private Field deferredResultTimeoutResultField;
+
+	@Pointcut("execution(public * (@org.springframework.web.bind.annotation.RestController *).*(..))")
+	void methodOfRestController() {}
 
 	@Pointcut("execution(public * (@net.bluewizardhat.dockerwebapp.util.logging.LogInvocation *).*(..))")
 	void methodOfAnnotatedClass() {}
@@ -45,7 +52,7 @@ public class LoggingAspect {
 		deferredResultTimeoutResultField.setAccessible(true);
 	}
 
-	@Around("methodOfAnnotatedClass() || annotatedMethod()")
+	@Around("methodOfAnnotatedClass() || annotatedMethod() || methodOfRestController()")
 	public Object logInvocation(ProceedingJoinPoint jp) throws Throwable {
 		long startTime = System.currentTimeMillis();
 		Object[] args = jp.getArgs();
@@ -56,6 +63,9 @@ public class LoggingAspect {
 		LogInvocation annotation = method.getAnnotation(LogInvocation.class);
 		if (annotation == null) {
 			annotation = method.getDeclaringClass().getAnnotation(LogInvocation.class);
+		}
+		if (annotation == null) {
+			annotation = LogInvocationDefaults.class.getAnnotation(LogInvocation.class);
 		}
 
 		try {
