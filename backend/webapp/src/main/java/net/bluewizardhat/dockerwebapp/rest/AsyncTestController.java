@@ -42,4 +42,10 @@ public class AsyncTestController extends BaseRestController {
 		mdcCopy.forEach((key, value) -> log.info("MDC key='{}', value='{}'", key, value));
 		service.logMdcContentsMeow();
 	}
+
+	@GetMapping(path = "/exception", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void throwException() {
+		service.throwException();
+	}
 }

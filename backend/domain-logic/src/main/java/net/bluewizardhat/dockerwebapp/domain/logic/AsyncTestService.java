@@ -1,5 +1,6 @@
 package net.bluewizardhat.dockerwebapp.domain.logic;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,5 +37,10 @@ public class AsyncTestService  {
 		log.info("MDC contains {} entries; security context {}", mdcCopy.size(), SecurityContextHolder.getContext());
 		mdcCopy.forEach((key, value) -> log.info("MDC key='{}', value='{}'", key, value));
 		//log.info("Trace", new RuntimeException("Trace"));
+	}
+
+	public void throwException() {
+		//throw new IllegalArgumentException("test");
+		throw new RuntimeException(new IOException(new IllegalStateException("test")));
 	}
 }

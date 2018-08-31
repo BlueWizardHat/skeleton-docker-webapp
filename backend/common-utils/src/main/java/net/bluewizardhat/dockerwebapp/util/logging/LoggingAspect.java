@@ -21,6 +21,10 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SettableListenableFuture;
 import org.springframework.web.context.request.async.DeferredResult;
 
+/**
+ * @see LogInvocation
+ * @see Sensitive
+ */
 @Order(2)
 @Aspect
 @Component
@@ -253,10 +257,12 @@ public class LoggingAspect {
 	private void logErrorReturn(Logger logger, Method method, LogInvocation annotation, long startTime, Throwable thr) {
 		long time = System.currentTimeMillis() - startTime;
 
-		String msg = prefixMessage("Exiting {} (after {} ms) with {} msg='{}'");
+		StringBuilder chain = new StringBuilder(thr.getClass().getSimpleName());
+		String thrmsg = describeThrowable(thr, chain);
+		String msg = prefixMessage("Exiting {} (after {} ms) with {}: '{}'");
 		Object[] args = annotation.logStacktraces()
-				? new Object[] { method.getName(), time, thr.getClass().getSimpleName(), thr.getMessage(), thr }
-				: new Object[] { method.getName(), time, thr.getClass().getSimpleName(), thr.getMessage() };
+				? new Object[] { method.getName(), time, chain, thrmsg, thr }
+				: new Object[] { method.getName(), time, chain, thrmsg };
 
 		switch (annotation.exceptionLogLevel()) {
 		case ERROR:
@@ -266,6 +272,17 @@ public class LoggingAspect {
 			logger.warn(msg, args);
 			break;
 		}
+	}
+
+	private String describeThrowable(Throwable original, StringBuilder chain) {
+		Throwable lastCause = original;
+		Throwable nextCause = original.getCause();
+		while (nextCause != null) {
+			chain.append(" < ").append(nextCause.getClass().getSimpleName());
+			lastCause = nextCause;
+			nextCause = nextCause.getCause();
+		}
+		return lastCause.getMessage();
 	}
 
 	private String prefixMessage(String msg) {
