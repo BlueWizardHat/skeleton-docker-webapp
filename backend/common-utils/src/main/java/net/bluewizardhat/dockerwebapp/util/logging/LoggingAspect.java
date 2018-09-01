@@ -277,10 +277,16 @@ public class LoggingAspect {
 	private String describeThrowable(Throwable original, StringBuilder chain) {
 		Throwable lastCause = original;
 		Throwable nextCause = original.getCause();
+		int depth = 1;
 		while (nextCause != null) {
-			chain.append(" < ").append(nextCause.getClass().getSimpleName());
+			depth++;
 			lastCause = nextCause;
 			nextCause = nextCause.getCause();
+		}
+		if (depth == 2) {
+			chain.append(" < ").append(lastCause.getClass().getSimpleName());
+		} else if (depth > 2) {
+			chain.append(" < ").append(depth - 2).append(" more < ").append(lastCause.getClass().getSimpleName());
 		}
 		return lastCause.getMessage();
 	}

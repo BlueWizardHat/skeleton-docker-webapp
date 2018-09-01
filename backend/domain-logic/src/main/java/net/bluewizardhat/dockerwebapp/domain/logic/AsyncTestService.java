@@ -28,6 +28,7 @@ public class AsyncTestService  {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		//throw new IllegalArgumentException("test");
 		return new AsyncResult<>("spring1\n");
 	}
 
@@ -39,8 +40,27 @@ public class AsyncTestService  {
 		//log.info("Trace", new RuntimeException("Trace"));
 	}
 
-	public void throwException() {
+	@Async("domainLogicExecutor")
+	public void throwException1() throws IOException {
+		//throw new IllegalArgumentException("test");
+		throw new IOException("test");
+	}
+
+	@Async("domainLogicExecutor")
+	public void throwException2() {
+		//throw new IllegalArgumentException("test");
+		throw new RuntimeException(new IllegalStateException("test"));
+	}
+
+	@Async("domainLogicExecutor")
+	public void throwException3() {
 		//throw new IllegalArgumentException("test");
 		throw new RuntimeException(new IOException(new IllegalStateException("test")));
+	}
+
+	@Async("domainLogicExecutor")
+	public void throwException4() {
+		//throw new IllegalArgumentException("test");
+		throw new RuntimeException(new RuntimeException(new IOException(new IllegalStateException("test"))));
 	}
 }

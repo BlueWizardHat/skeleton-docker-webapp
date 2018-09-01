@@ -27,43 +27,43 @@ public abstract class BaseRestController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public void handleException(IllegalArgumentException e) {
-		log.warn("Unhandled IllegalArgumentException: '{}'", e.getMessage(), e);
+		log.warn("Unhandled IllegalArgumentException: '{}'", e.getMessage());
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	public void handleException(ConstraintViolationException e) {
-		log.warn("Unhandled ConstraintViolationException: '{}'", e.getMessage(), e);
+		log.warn("Unhandled ConstraintViolationException: '{}'", e.getMessage());
 	}
 
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
 	public void handleException(NotFoundException e) {
-		log.warn("Unhandled NotFoundException: '{}'", e.getMessage(), e);
+		log.warn("Unhandled NotFoundException: '{}'", e.getMessage());
 	}
 
 	@ExceptionHandler(AsyncRequestTimeoutException.class)
 	@ResponseStatus(code = HttpStatus.REQUEST_TIMEOUT)
 	public void handleException(AsyncRequestTimeoutException e) {
-		log.warn("Unhandled AsyncRequestTimeoutException: '{}'", e.getMessage(), e);
+		log.error("Unhandled AsyncRequestTimeoutException: '{}'", e.getMessage(), e);
 	}
 
 	@ExceptionHandler(TaskRejectedException.class)
 	@ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
 	public void handleException(TaskRejectedException e) {
-		log.warn("Unhandled TaskRejectedException: '{}'", e.getMessage(), e);
+		log.error("Unhandled TaskRejectedException: '{}'", e.getMessage(), e);
 	}
 
 	@ExceptionHandler(RejectedExecutionException.class)
 	@ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
 	public void handleException(RejectedExecutionException e) {
-		log.warn("Unhandled RejectedExecutionException: '{}'", e.getMessage(), e);
+		log.error("Unhandled RejectedExecutionException: '{}'", e.getMessage(), e);
 	}
 
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
 	public void handleException(Exception e) {
-		log.warn("Unhandled {}: '{}'", e.getClass().getSimpleName(), e.getMessage(), e);
+		log.error("Unhandled {}: '{}'", e.getClass().getSimpleName(), e.getMessage(), e);
 	}
 
 	/**

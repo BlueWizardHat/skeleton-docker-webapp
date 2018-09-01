@@ -1,5 +1,6 @@
 package net.bluewizardhat.dockerwebapp.rest;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -43,9 +44,27 @@ public class AsyncTestController extends BaseRestController {
 		service.logMdcContentsMeow();
 	}
 
-	@GetMapping(path = "/exception", produces = MediaType.TEXT_PLAIN_VALUE)
+	@GetMapping(path = "/exception1", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public void throwException() {
-		service.throwException();
+	public void throwException1() throws IOException {
+		service.throwException1();
+	}
+
+	@GetMapping(path = "/exception2", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void throwException2() {
+		service.throwException2();
+	}
+
+	@GetMapping(path = "/exception3", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void throwException3() {
+		service.throwException3();
+	}
+
+	@GetMapping(path = "/exception4", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void throwException4() {
+		service.throwException4();
 	}
 }
