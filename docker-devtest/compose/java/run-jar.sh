@@ -3,22 +3,35 @@
 JAVA_RUN_DIR="/var/run/java"
 
 jar_file="$1"
-wait_for="$2"
-wait_after="$3"
+shift
 
 #echo "JAVA_DEBUG=${JAVA_DEBUG}"
 if [ ! -z "${JAVA_DEBUG}" ]; then
 	DEBUGGING_FLAGS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4000 "
 fi
 
-if [ ! -z "${wait_for}" ]; then
-	/setup/wait-for-it.sh -t 180 "${wait_for}"
-fi
+function wait_for_tcp() {
+	echo "Waiting for tcp: '$1'"
+	/setup/wait-for-it.sh -t 180 "$1"
+}
 
-if [ ! -z "${wait_after}" ]; then
-        echo "Sleeping for additional ${wait_after} second(s)"
-        sleep "${wait_after}"
-fi
+function wait_seconds() {
+	echo "Sleeping for additional $1 second(s)"
+	sleep "$1"
+}
+
+while [[ $# > 0 ]]; do
+	wait_for="$1"
+	shift
+
+	if [[ "${wait_for}" =~ ^[0-9]+$ ]]; then
+		wait_seconds "${wait_for}"
+	else
+		wait_for_tcp "${wait_for}"
+	fi
+
+done
+
 
 if [ ! -d "${JAVA_RUN_DIR}" ]; then
   mkdir -p "${JAVA_RUN_DIR}"
