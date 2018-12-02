@@ -25,15 +25,15 @@
 
 		<!-- Ensure we have newest versions of lombok and guava -->
 		<lombok.version>1.18.4</lombok.version>
-		<guava.version>26.0-jre</guava.version>
+		<guava.version>27.0-jre</guava.version>
 
 		<!-- Stuff not in the BOM -->
-		<swagger.version>2.0.2</swagger.version>
+		<swagger.version>2.0.5</swagger.version>
 		<springfox-swagger.version>2.9.2</springfox-swagger.version>
 		<hibernate-jpa.version>1.0.2.Final</hibernate-jpa.version>
 		<csrf-token-filter.version>1.1</csrf-token-filter.version>
-		<argon2.version>2.4</argon2.version>
-		<postgres.version>42.2.2</postgres.version>
+		<argon2.version>2.5</argon2.version>
+		<postgres.version>42.2.5</postgres.version>
 	</properties>
 
 	<modules>
@@ -88,7 +88,8 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Library versions from Spring-Boot  -->
+			<!-- Library versions from Spring-Boot (implicit since it's the parent) -->
+			<!--
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-parent</artifactId>
@@ -96,7 +97,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
+			-->
 			<!-- Ensure we have newest versions of lombok and guava -->
 			<dependency>
 				<groupId>org.projectlombok</groupId>
@@ -206,7 +207,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
+					<version>3.8.0</version>
 					<configuration>
 						<source>${targetJdk}</source>
 						<target>${targetJdk}</target>
