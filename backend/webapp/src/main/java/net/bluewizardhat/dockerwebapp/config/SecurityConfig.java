@@ -27,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
@@ -106,7 +107,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.logout()
 					.logoutUrl("/api/public/logout")
 					.logoutSuccessHandler(new CustomLogoutSuccessHandler())
-					.deleteCookies("JSESSIONID")
+					.deleteCookies("JSESSIONID", "XSRF-TOKEN")
+			.and()
+				.csrf()
+					.csrfTokenRepository(new CookieCsrfTokenRepository())
 		;
 
 		// Add CSRF token to response headers

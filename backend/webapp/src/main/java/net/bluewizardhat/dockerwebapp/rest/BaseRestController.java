@@ -1,70 +1,15 @@
 package net.bluewizardhat.dockerwebapp.rest;
 
-import java.util.concurrent.RejectedExecutionException;
-
-import javax.validation.ConstraintViolationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.task.TaskRejectedException;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import net.bluewizardhat.dockerwebapp.domain.logic.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Base class for rest controllers with some default exception handlers and support for
- * async processing.
+ * Base class for rest controllers with helper methods for for async processing.
  */
+@Slf4j
 public abstract class BaseRestController {
-
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@ExceptionHandler(IllegalArgumentException.class)
-	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	public void handleException(IllegalArgumentException e) {
-		log.warn("Unhandled IllegalArgumentException: '{}'", e.getMessage());
-	}
-
-	@ExceptionHandler(ConstraintViolationException.class)
-	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	public void handleException(ConstraintViolationException e) {
-		log.warn("Unhandled ConstraintViolationException: '{}'", e.getMessage());
-	}
-
-	@ExceptionHandler(NotFoundException.class)
-	@ResponseStatus(code = HttpStatus.NOT_FOUND)
-	public void handleException(NotFoundException e) {
-		log.warn("Unhandled NotFoundException: '{}'", e.getMessage());
-	}
-
-	@ExceptionHandler(AsyncRequestTimeoutException.class)
-	@ResponseStatus(code = HttpStatus.REQUEST_TIMEOUT)
-	public void handleException(AsyncRequestTimeoutException e) {
-		log.error("Unhandled AsyncRequestTimeoutException: '{}'", e.getMessage(), e);
-	}
-
-	@ExceptionHandler(TaskRejectedException.class)
-	@ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
-	public void handleException(TaskRejectedException e) {
-		log.error("Unhandled TaskRejectedException: '{}'", e.getMessage(), e);
-	}
-
-	@ExceptionHandler(RejectedExecutionException.class)
-	@ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
-	public void handleException(RejectedExecutionException e) {
-		log.error("Unhandled RejectedExecutionException: '{}'", e.getMessage(), e);
-	}
-
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-	public void handleException(Exception e) {
-		log.error("Unhandled {}: '{}'", e.getClass().getSimpleName(), e.getMessage(), e);
-	}
 
 	/**
 	 * Converts a ListenableFuture to a DeferredResult with a custom timeout and a timeout result for long running operations.
