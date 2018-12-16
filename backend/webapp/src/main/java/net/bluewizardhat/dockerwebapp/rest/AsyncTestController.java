@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.bluewizardhat.dockerwebapp.domain.logic.AsyncTestService;
 
 @Slf4j
-@Component
 @RestController
 @RequestMapping("/api/public/async")
 public class AsyncTestController extends BaseRestController {
