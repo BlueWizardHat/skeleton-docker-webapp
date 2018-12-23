@@ -20,6 +20,18 @@ management:
 info.app:
   name: @project.name@
   description: @project.description@
-  version: @project.version@
-  groupId: @project.groupId@
-  artifactId: @project.artifactId@
+  maven:
+    groupId: @project.groupId@
+    artifactId: @project.artifactId@
+    version: @project.version@
+  build:
+    time: @maven.build.timestamp@
+    user: @user.name@
+    os: @os.name@/@os.arch@
+    git:
+      commit: @git.commit.id@
+      describe: @git.commit.id.describe@
+    java:
+      runtime: @java.runtime.name@
+      vm.name: @java.vm.name@
+      version: @java.version@
