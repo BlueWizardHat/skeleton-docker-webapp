@@ -17,21 +17,36 @@ management:
     diskspace.enabled: false
 
 # Actuator info
-info.app:
-  name: @project.name@
-  description: @project.description@
-  maven:
+info:
+  project:
+    name: @project.name@
+    description: @project.description@
     groupId: @project.groupId@
     artifactId: @project.artifactId@
     version: @project.version@
+    spring:
+      boot: @spring.boot.version@
+      version: @spring.version@
   build:
+    maven: @maven.version@
     time: @maven.build.timestamp@
-    user: @user.name@
-    os: @os.name@/@os.arch@
+    system:
+      user: @user.name@
+      os: @os.name@/@os.arch@
     git:
       commit: @git.commit.id@
       describe: @git.commit.id.describe@
     java:
       runtime: @java.runtime.name@
-      vm.name: @java.vm.name@
+      vm: @java.vm.name@
       version: @java.version@
+  runtime:
+    system:
+      user: ${user.name}
+      os: ${os.name}/${os.arch}
+    spring:
+      profile: ${spring.profiles.active:default}
+    java:
+      runtime: ${java.runtime.name}
+      vm: ${java.vm.name}
+      version: ${java.version}
