@@ -8,9 +8,12 @@ spring:
   jpa.properties.hibernate.id.new_generator_mappings: true
 
 
-# Actuator health
+# Actuator health and metrics
 management:
-  endpoint.health.show-details: always
+  endpoints:
+    web.exposure.include: health, info, metrics
+  endpoint:
+    health.show-details: always
   health:
     db.enabled: true
     redis.enabled: true
