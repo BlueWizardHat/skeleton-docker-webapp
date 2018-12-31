@@ -7,6 +7,8 @@ spring:
   # Use the enhanced (non-deprecated) sequence generator
   jpa.properties.hibernate.id.new_generator_mappings: true
 
+  application:
+    name: @project.name@
 
 # Actuator health and metrics
 management:
@@ -50,3 +52,15 @@ info:
       runtime: ${java.runtime.name}
       vm: ${java.vm.name}
       version: ${java.version}
+
+---
+spring:
+  profiles: development
+
+---
+spring:
+  profiles: staging
+
+---
+spring:
+  profiles: production
