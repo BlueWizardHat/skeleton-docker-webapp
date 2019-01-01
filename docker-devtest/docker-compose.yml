@@ -22,9 +22,16 @@ services:
       - "4081:4000"
     environment:
       - "JAVA_DEBUG=${BACKEND_DEBUG}"
+      - "spring.profiles.active=local"
+      - "security.basic.enabled=false"
+      - "logging.config=./log4j2.xml"
+      - "spring.datasource.url=jdbc:postgresql://postgresql/docker"
+      - "spring.datasource.username=docker"
+      - "spring.datasource.password=docker"
+      - "spring.redis.host=redis"
+      - "spring.redis.port=6379"
     volumes:
       - ./.deploy/backend.jar:/code/backend.jar
-      - ./app-config/backend.properties:/code/application.properties
       - ./app-config/log4j2.xml:/code/log4j2.xml
     links:
       - postgresql

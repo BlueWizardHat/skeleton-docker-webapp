@@ -85,7 +85,15 @@ public class RequestLoggingFilter implements Filter {
 				request.setAttribute(attributeTraceIdKey, traceId);
 				request.setAttribute(attributeStartTimeKey, start);
 
-				log.info("{} '{}' - begin", method, path);
+				if (request.getCookies() != null) {
+					StringBuilder cookieStr = new StringBuilder();
+					for (Cookie cookie : request.getCookies()) {
+						cookieStr.append(", ").append(cookie.getName()).append("=").append(cookie.getValue());
+					}
+					log.info("{} '{}' - begin / Cookies: {{}}", method, path, cookieStr.substring(2).toString());
+				} else {
+					log.info("{} '{}' - begin", method, path);
+				}
 
 				filterChain.doFilter(request, response);
 

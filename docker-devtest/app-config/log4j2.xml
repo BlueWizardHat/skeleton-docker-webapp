@@ -12,6 +12,8 @@
 
 		<!-- <Logger name="org.hibernate.hql.internal.ast.QueryTranslatorImpl" level="debug" /> -->
 
+		<!-- <Logger name="org.springframework.security.web.csrf.CsrfFilter" level="debug" /> -->
+
 		<Root level="info">
 			<AppenderRef ref="Console"/>
 		</Root>

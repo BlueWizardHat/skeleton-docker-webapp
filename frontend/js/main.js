@@ -26,7 +26,8 @@
 	$.ajaxPrefilter(function (options, originalOptions, xhr) {
 		if (csrfToken) {
 			console.log('ajaxPrefilter - setting csrf token', csrfToken);
-			xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+			xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken); // Session based csrf
+			xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken); // Cookie based csrf
 		}
 	});
 

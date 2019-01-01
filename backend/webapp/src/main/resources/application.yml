@@ -10,6 +10,14 @@ spring:
   application:
     name: @project.name@
 
+  datasource.driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    hibernate.ddl-auto: validate
+
+  cache.type: redis
+
+
 # Actuator health and metrics
 management:
   endpoints:
@@ -55,7 +63,21 @@ info:
 
 ---
 spring:
+  profiles: local
+
+logging.level:
+  org.springframework:
+    transaction.interceptor: TRACE
+    security.web.csrf.CsrfFilter: DEBUG
+
+---
+spring:
   profiles: development
+
+logging.level:
+  org.springframework:
+    transaction.interceptor: TRACE
+    security.web.csrf.CsrfFilter: DEBUG
 
 ---
 spring:
