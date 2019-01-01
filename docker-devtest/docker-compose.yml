@@ -23,7 +23,6 @@ services:
     environment:
       - "JAVA_DEBUG=${BACKEND_DEBUG}"
       - "spring.profiles.active=local"
-      - "security.basic.enabled=false"
       - "logging.config=./log4j2.xml"
       - "spring.datasource.url=jdbc:postgresql://postgresql/docker"
       - "spring.datasource.username=docker"
