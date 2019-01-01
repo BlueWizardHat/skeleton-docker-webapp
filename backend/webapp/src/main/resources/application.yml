@@ -21,7 +21,7 @@ spring:
 # Actuator health and metrics
 management:
   endpoints:
-    web.exposure.include: health, info, metrics
+    web.exposure.include: health, info, metrics, flyway
   endpoint:
     health.show-details: always
   health:
