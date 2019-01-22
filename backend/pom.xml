@@ -34,6 +34,10 @@
 		<csrf-token-filter.version>1.1</csrf-token-filter.version>
 		<argon2.version>2.5</argon2.version>
 		<postgres.version>42.2.5</postgres.version>
+
+		<!-- Override kotlin version to newest -->
+		<kotlin.version>1.3.11</kotlin.version>
+		<kotlin-logging.version>1.6.22</kotlin-logging.version>
 	</properties>
 
 	<modules>
@@ -58,6 +62,14 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.github.microutils</groupId>
+			<artifactId>kotlin-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
 		</dependency>
 
 		<dependency>
@@ -157,6 +169,18 @@
 				<version>${csrf-token-filter.version}</version>
 			</dependency>
 
+			<!-- Override kotlin version to newest -->
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-stdlib-common</artifactId>
+				<version>${kotlin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.microutils</groupId>
+				<artifactId>kotlin-logging</artifactId>
+				<version>${kotlin-logging.version}</version>
+			</dependency>
+
 			<!-- Project components -->
 			<dependency>
 				<groupId>net.bluewizardhat.dockerwebapp</groupId>
@@ -190,6 +214,14 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<groupId>org.jetbrains.kotlin</groupId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 			</plugin>
 			<plugin>
@@ -216,6 +248,25 @@
 						<source>${targetJdk}</source>
 						<target>${targetJdk}</target>
 					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>kotlin-maven-plugin</artifactId>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<version>${kotlin.version}</version>
+					<executions>
+						<execution>
+							<id>compile</id>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>test-compile</id>
+							<goals>
+								<goal>test-compile</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
