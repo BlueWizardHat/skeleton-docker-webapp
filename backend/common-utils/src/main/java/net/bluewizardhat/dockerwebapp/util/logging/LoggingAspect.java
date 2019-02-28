@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SettableListenableFuture;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
@@ -37,9 +39,6 @@ public class LoggingAspect {
 	@Value("${net.bluewizardhat.logging.aspect.msgPrefix:true}")
 	private boolean msgPrefix;
 
-	private Field deferredResultTimeoutField;
-	private Field deferredResultTimeoutResultField;
-
 	@Pointcut("execution(public * (@org.springframework.web.bind.annotation.RestController *).*(..))")
 	void methodOfRestController() {}
 
@@ -48,13 +47,6 @@ public class LoggingAspect {
 
 	@Pointcut("execution(@net.bluewizardhat.dockerwebapp.util.logging.LogInvocation * *.*(..))")
 	void annotatedMethod() {}
-
-	public LoggingAspect() throws NoSuchFieldException {
-		deferredResultTimeoutField = DeferredResult.class.getDeclaredField("timeout");
-		deferredResultTimeoutField.setAccessible(true);
-		deferredResultTimeoutResultField = DeferredResult.class.getDeclaredField("timeoutResult");
-		deferredResultTimeoutResultField.setAccessible(true);
-	}
 
 	@Around("methodOfAnnotatedClass() || annotatedMethod() || methodOfRestController()")
 	public Object logInvocation(ProceedingJoinPoint jp) throws Throwable {
@@ -153,8 +145,8 @@ public class LoggingAspect {
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private DeferredResult<?> handleDeferredResult(DeferredResult<?> result, Logger logger, Method method, LogInvocation annotation, long startTime) {
-		Long timeout = (Long) getPrivateField(deferredResultTimeoutField, result);
-		Object timeoutResult = getPrivateField(deferredResultTimeoutResultField, result);
+		Long timeout = getDeferredResultField(logger, result, "timeout", Long.class);
+		Object timeoutResult = getDeferredResultField(logger, result, "timeoutResult", Object.class);
 
 		final DeferredResult loggingResult = (timeoutResult != null)
 				? new DeferredResult<>(timeout, timeoutResult)
@@ -169,13 +161,41 @@ public class LoggingAspect {
 			loggingResult.setResult(actualResult);
 		});
 
+		loggingResult.onTimeout(() -> {
+			Runnable timeoutCallback = getDeferredResultField(logger, result, "timeoutCallback", Runnable.class);
+			if (timeoutCallback != null) {
+				timeoutCallback.run();
+			}
+			if (!result.hasResult()) {
+				result.setErrorResult(new AsyncRequestTimeoutException());
+			}
+		});
+
+		loggingResult.onError(thr -> {
+			Consumer<Throwable> errorCallback = getDeferredResultField(logger, result, "errorCallback", Consumer.class);
+			if (errorCallback != null) {
+				errorCallback.accept((Throwable) thr);
+			}
+		});
+
+		loggingResult.onCompletion(() -> {
+			Runnable completionCallback = getDeferredResultField(logger, result, "completionCallback", Runnable.class);
+			if (completionCallback != null) {
+				completionCallback.run();
+			}
+		});
+
 		return loggingResult;
 	}
 
-	private Object getPrivateField(Field field, Object obj) {
+	@SuppressWarnings("unchecked")
+	private <T> T getDeferredResultField(Logger logger, Object src, String name,  Class<T> targetClass) {
 		try {
-			return field.get(obj);
-		} catch (IllegalAccessException|IllegalArgumentException e) {
+			Field field = DeferredResult.class.getDeclaredField(name);
+			field.setAccessible(true);
+			return (T) field.get(src);
+		} catch (IllegalAccessException|IllegalArgumentException|NoSuchFieldException e) {
+			logger.warn(prefixMessage("Unable to read DeferredResult.{} - {}: {}"), name, e.getClass().getSimpleName(), e.getMessage());
 			return null;
 		}
 	}

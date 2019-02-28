@@ -33,6 +33,12 @@ public class AsyncTestController extends BaseRestController {
 		return deferredResult(service.doSpringAsync(null, null));
 	}
 
+	@GetMapping(path = "/springTimeout", produces = MediaType.TEXT_PLAIN_VALUE)
+	public @ResponseBody DeferredResult<String> doSpringAsyncTimeout() {
+		log.info("doSpringAsync: {}", SecurityContextHolder.getContext());
+		return deferredResult(service.doSpringAsync(null, null), 500L);
+	}
+
 	@GetMapping(path = "/logmdc", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void logMdcContents() {
