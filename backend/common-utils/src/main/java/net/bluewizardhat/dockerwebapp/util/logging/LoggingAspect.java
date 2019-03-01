@@ -162,12 +162,16 @@ public class LoggingAspect {
 		});
 
 		loggingResult.onTimeout(() -> {
-			Runnable timeoutCallback = getDeferredResultField(logger, result, "timeoutCallback", Runnable.class);
-			if (timeoutCallback != null) {
-				timeoutCallback.run();
-			}
-			if (!result.hasResult()) {
-				result.setErrorResult(new AsyncRequestTimeoutException());
+			try {
+				Runnable timeoutCallback = getDeferredResultField(logger, result, "timeoutCallback", Runnable.class);
+				if (timeoutCallback != null) {
+					timeoutCallback.run();
+				}
+			} finally {
+				if (!result.hasResult()) {
+					// Would have been set by spring if we had not intercepted.
+					result.setErrorResult(new AsyncRequestTimeoutException());
+				}
 			}
 		});
 
