@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.1.RELEASE</version>
+		<version>2.1.3.RELEASE</version>
 	</parent>
 
 	<name>DockerWebApp</name>
@@ -21,10 +21,10 @@
 		<java.version>1.8</java.version>
 
 		<!-- Spring dependency versions -->
-		<spring.boot.version>2.1.1.RELEASE</spring.boot.version>
+		<spring.boot.version>2.1.3.RELEASE</spring.boot.version>
 
 		<!-- Ensure we have newest versions of lombok and guava -->
-		<lombok.version>1.18.4</lombok.version>
+		<lombok.version>1.18.6</lombok.version>
 		<guava.version>27.0-jre</guava.version>
 
 		<!-- Stuff not in the BOM -->
@@ -37,7 +37,7 @@
 
 		<!-- Override kotlin version to newest -->
 		<kotlin.version>1.3.20</kotlin.version>
-		<kotlin-logging.version>1.6.22</kotlin-logging.version>
+		<kotlin-logging.version>1.6.26</kotlin-logging.version>
 	</properties>
 
 	<modules>
